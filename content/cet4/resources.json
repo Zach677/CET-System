@@ -1,0 +1,89 @@
+[
+  {
+    "id": "cet4-paper-2024-12-a",
+    "level": "cet4",
+    "type": "papers",
+    "title": "2024年12月四级真题 A 卷",
+    "summary": "含试卷结构说明、听力音频和答题节奏建议。",
+    "year": 2024,
+    "source": "自建整理",
+    "licenseStatus": "owned",
+    "hostMode": "owned",
+    "downloadPolicy": "signed",
+    "externalUrl": null,
+    "tags": ["真题", "听力", "近年"],
+    "files": [
+      {
+        "label": "试卷 PDF",
+        "kind": "pdf",
+        "path": "papers/cet4-paper-2024-12-a.pdf",
+        "cacheable": true
+      },
+      {
+        "label": "听力音频",
+        "kind": "audio",
+        "path": "audio/cet4-paper-2024-12-a.mp3",
+        "cacheable": true
+      }
+    ]
+  },
+  {
+    "id": "cet4-mock-sprint-01",
+    "level": "cet4",
+    "type": "mocks",
+    "title": "四级冲刺模拟卷 01",
+    "summary": "按真实考试节奏排版，适合考前限时训练。",
+    "year": 2025,
+    "source": "自建整理",
+    "licenseStatus": "owned",
+    "hostMode": "owned",
+    "downloadPolicy": "signed",
+    "externalUrl": null,
+    "tags": ["模拟", "冲刺"],
+    "files": [
+      {
+        "label": "模拟卷 PDF",
+        "kind": "pdf",
+        "path": "mocks/cet4-mock-sprint-01.pdf",
+        "cacheable": true
+      }
+    ]
+  },
+  {
+    "id": "cet4-listening-welearn",
+    "level": "cet4",
+    "type": "listening",
+    "title": "四级听力跟练导航：WE Test / 听力随身练",
+    "summary": "解释两类平台资源的特点、适用场景和风险边界。",
+    "year": 2025,
+    "source": "编辑部整理",
+    "licenseStatus": "restricted",
+    "hostMode": "restricted",
+    "downloadPolicy": "none",
+    "externalUrl": "https://wetest.sflep.com/contact.aspx",
+    "tags": ["听力", "平台资源"],
+    "files": []
+  },
+  {
+    "id": "cet4-reading-cloze-kit",
+    "level": "cet4",
+    "type": "skills",
+    "title": "四级阅读与选词填空专项包",
+    "summary": "按题型拆分练习，配短评和速度目标。",
+    "year": 2025,
+    "source": "自建整理",
+    "licenseStatus": "owned",
+    "hostMode": "owned",
+    "downloadPolicy": "signed",
+    "externalUrl": null,
+    "tags": ["专项", "阅读"],
+    "files": [
+      {
+        "label": "专项练习 PDF",
+        "kind": "pdf",
+        "path": "skills/cet4-reading-cloze-kit.pdf",
+        "cacheable": true
+      }
+    ]
+  }
+]

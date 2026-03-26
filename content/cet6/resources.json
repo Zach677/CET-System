@@ -1,0 +1,61 @@
+[
+  {
+    "id": "cet6-paper-2024-12-a",
+    "level": "cet6",
+    "type": "papers",
+    "title": "2024年12月六级真题 A 卷",
+    "summary": "适合做全套模考，含音频和复盘提示。",
+    "year": 2024,
+    "source": "自建整理",
+    "licenseStatus": "owned",
+    "hostMode": "owned",
+    "downloadPolicy": "signed",
+    "externalUrl": null,
+    "tags": ["真题", "六级"],
+    "files": [
+      {
+        "label": "试卷 PDF",
+        "kind": "pdf",
+        "path": "papers/cet6-paper-2024-12-a.pdf",
+        "cacheable": true
+      }
+    ]
+  },
+  {
+    "id": "cet6-writing-templates",
+    "level": "cet6",
+    "type": "resources",
+    "title": "六级写作模板与高分表达",
+    "summary": "收录常见图表文、议论文句式和审题提醒。",
+    "year": 2025,
+    "source": "自建整理",
+    "licenseStatus": "owned",
+    "hostMode": "owned",
+    "downloadPolicy": "signed",
+    "externalUrl": null,
+    "tags": ["资源", "写作"],
+    "files": [
+      {
+        "label": "模板 PDF",
+        "kind": "pdf",
+        "path": "resources/cet6-writing-templates.pdf",
+        "cacheable": true
+      }
+    ]
+  },
+  {
+    "id": "cet6-listening-sflep-guide",
+    "level": "cet6",
+    "type": "listening",
+    "title": "六级听力平台导览：听力随身练",
+    "summary": "帮助同学判断什么时候用平台练、什么时候回到真题。",
+    "year": 2025,
+    "source": "编辑部整理",
+    "licenseStatus": "restricted",
+    "hostMode": "restricted",
+    "downloadPolicy": "none",
+    "externalUrl": "https://we.sflep.com/service",
+    "tags": ["听力", "平台资源"],
+    "files": []
+  }
+]

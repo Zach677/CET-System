@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cet-exam-system",
+  "compatibility_date": "2026-03-17",
+  "main": "./workers/app.ts",
+  "observability": {
+    "enabled": true
+  },
+  "compatibility_flags": ["nodejs_compat"],
+  "r2_buckets": [
+    {
+      "binding": "RESOURCE_BUCKET",
+      "bucket_name": "cet-exam-system-assets"
+    }
+  ],
+  "vars": {
+    "PUBLIC_APP_NAME": "CET 备考工作台",
+    "R2_PUBLIC_BASE_URL": ""
+  }
+}
