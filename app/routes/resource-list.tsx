@@ -1,7 +1,10 @@
 import { Form } from "react-router";
+import { Field } from "@base-ui/react/field";
+import { Input } from "@base-ui/react/input";
 
 import { ResourceCard } from "~/components/resource-card";
 import { SiteShell } from "~/components/site-shell";
+import { Button } from "~/components/ui/button";
 import { examLevelSchema, typeFromSlug, typeLabel } from "~/lib/resources";
 import { listResources } from "~/server/content.server";
 
@@ -47,19 +50,22 @@ export default function ResourceList({ loaderData }: Route.ComponentProps) {
     >
       <section className="stack">
         <Form className="glass-card search-panel" role="search">
-          <label htmlFor="q">搜标题、摘要或标签</label>
-          <div className="search-row">
-            <input
-              id="q"
-              name="q"
-              type="search"
-              defaultValue={loaderData.q}
-              placeholder={`搜 ${typeLabel[loaderData.type]}…`}
-            />
-            <button className="button primary" type="submit">
-              搜索
-            </button>
-          </div>
+          <Field.Root name="q">
+            <Field.Label>搜标题、摘要或标签</Field.Label>
+            <div className="search-row">
+              <Input
+                id="q"
+                name="q"
+                type="search"
+                defaultValue={loaderData.q}
+                placeholder={`搜 ${typeLabel[loaderData.type]}…`}
+                className="search-input"
+              />
+              <Button variant="primary" type="submit">
+                搜索
+              </Button>
+            </div>
+          </Field.Root>
         </Form>
 
         <div className="section-header">

@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { Button } from "~/components/ui/button";
+import { buttonClassName } from "~/components/ui/button-styles";
 import { createLocalFirstStore } from "~/lib/local-first";
 import type { ResourceRecord } from "~/lib/resources";
 
@@ -60,13 +62,18 @@ export function DownloadPanel({ resource }: { resource: ResourceRecord }) {
         <h3>这类资源不站内托管</h3>
         <p>{resource.summary}</p>
         {resource.externalUrl ? (
-          <a className="button primary" href={resource.externalUrl} target="_blank" rel="noreferrer">
+          <a
+            className={buttonClassName({ variant: "primary" })}
+            href={resource.externalUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
             前往原始来源
           </a>
         ) : (
-          <button className="button" type="button" disabled>
+          <Button disabled>
             当前无可用下载
-          </button>
+          </Button>
         )}
       </section>
     );
@@ -78,21 +85,21 @@ export function DownloadPanel({ resource }: { resource: ResourceRecord }) {
       <h3>站内可控下载</h3>
       <div className="action-stack">
         {resource.files.map((file) => (
-          <button
+          <Button
             key={file.path}
-            className="button primary"
-            type="button"
+            variant="primary"
             onClick={() => handleDownload(file.path, file.label, file.cacheable)}
             disabled={state.kind === "loading"}
+            focusableWhenDisabled
           >
             {state.kind === "loading" && state.fileLabel === file.label
               ? `准备 ${file.label}…`
               : `下载 ${file.label}`}
-          </button>
+          </Button>
         ))}
-        <button className="button" type="button" onClick={markStudy}>
+        <Button onClick={markStudy}>
           记一笔学习记录
-        </button>
+        </Button>
       </div>
       {state.kind === "error" && <p className="error-text">{state.message}</p>}
       <p className="meta-line">

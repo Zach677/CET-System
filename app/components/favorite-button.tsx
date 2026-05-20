@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Toggle } from "@base-ui/react/toggle";
 
 import { createLocalFirstStore } from "~/lib/local-first";
+import { classNames } from "~/lib/classnames";
 
 const store = createLocalFirstStore();
 
@@ -34,14 +36,14 @@ export function FavoriteButton({
   }
 
   return (
-    <button
-      type="button"
-      className={`favorite-button ${compact ? "is-compact" : ""}`}
-      aria-pressed={favorite}
-      onClick={toggle}
+    <Toggle
+      pressed={favorite}
+      className={classNames("favorite-button", compact && "is-compact")}
+      aria-label={favorite ? "取消收藏" : "收藏"}
+      onPressedChange={toggle}
     >
       <span>{favorite ? "★" : "☆"}</span>
       {!compact && <span>{favorite ? "已收藏" : "收藏"}</span>}
-    </button>
+    </Toggle>
   );
 }

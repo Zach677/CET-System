@@ -2,6 +2,7 @@ import { Link } from "react-router";
 
 import { LocalSummary } from "~/components/local-summary";
 import { SiteShell } from "~/components/site-shell";
+import { buttonClassName } from "~/components/ui/button-styles";
 import { examLevelSchema, typeLabel } from "~/lib/resources";
 import { getLevelOverview } from "~/server/content.server";
 
@@ -41,7 +42,10 @@ export default function LevelHome({ loaderData }: Route.ComponentProps) {
                   {bucket.latest[0]?.summary ??
                     "这一栏还没加满，但结构已经给你留好了。"}
                 </p>
-                <Link className="button primary" to={`/${loaderData.level}/${bucket.type}`}>
+                <Link
+                  className={buttonClassName({ variant: "primary" })}
+                  to={`/${loaderData.level}/${bucket.type}`}
+                >
                   看 {typeLabel[bucket.type]}
                 </Link>
               </article>

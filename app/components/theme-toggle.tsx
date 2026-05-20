@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Toggle } from "@base-ui/react/toggle";
+import { ToggleGroup } from "@base-ui/react/toggle-group";
 
 import {
   getThemeSelectionFromStorage,
@@ -39,17 +41,26 @@ export function ThemeToggle() {
   }
 
   return (
-    <div className="theme-toggle" aria-label="主题切换">
+    <ToggleGroup
+      className="theme-toggle"
+      aria-label="主题切换"
+      value={[selection]}
+      onValueChange={(value) => {
+        const nextSelection = value.at(-1) as ThemeSelection | undefined;
+        if (nextSelection) {
+          applySelection(nextSelection);
+        }
+      }}
+    >
       {options.map((option) => (
-        <button
+        <Toggle
           key={option.value}
-          type="button"
-          className={selection === option.value ? "is-active" : undefined}
-          onClick={() => applySelection(option.value)}
+          value={option.value}
+          aria-label={`切换到${option.label}主题`}
         >
           {option.label}
-        </button>
+        </Toggle>
       ))}
-    </div>
+    </ToggleGroup>
   );
 }

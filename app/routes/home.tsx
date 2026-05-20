@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { LocalSummary } from "~/components/local-summary";
 import { ResourceCard } from "~/components/resource-card";
 import { SiteShell } from "~/components/site-shell";
+import { buttonClassName } from "~/components/ui/button-styles";
 import { getHomeOverview } from "~/server/content.server";
 
 import type { Route } from "./+types/home";
@@ -41,7 +42,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 </div>
               ))}
             </div>
-            <Link className="button primary" to={`/${level.level}`}>
+            <Link
+              className={buttonClassName({ variant: "primary" })}
+              to={`/${level.level}`}
+            >
               进入 {level.label}
             </Link>
           </article>

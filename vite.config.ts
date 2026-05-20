@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "~": resolve(__dirname, "app"),
     },
+    dedupe: ["react", "react-dom"],
   },
   plugins: [
     mode === "test" ? null : cloudflare({ viteEnvironment: { name: "ssr" } }),

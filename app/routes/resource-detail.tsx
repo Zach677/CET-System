@@ -4,6 +4,7 @@ import { DownloadPanel } from "~/components/download-panel";
 import { FavoriteButton } from "~/components/favorite-button";
 import { ResourceCard } from "~/components/resource-card";
 import { SiteShell } from "~/components/site-shell";
+import { buttonClassName } from "~/components/ui/button-styles";
 import { levelLabel, typeLabel } from "~/lib/resources";
 import {
   createDownloadDecision,
@@ -95,7 +96,7 @@ export default function ResourceDetail({ loaderData }: Route.ComponentProps) {
           <section className="glass-card">
             <div className="section-kicker">返回</div>
             <h3>继续刷同类</h3>
-            <Link className="button" to={`/${resource.level}/${resource.type}`}>
+            <Link className={buttonClassName()} to={`/${resource.level}/${resource.type}`}>
               回到 {typeLabel[resource.type]}
             </Link>
           </section>
@@ -114,7 +115,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         eyebrow="404"
       >
         <section className="glass-card">
-          <Link className="button primary" to="/">
+          <Link className={buttonClassName({ variant: "primary" })} to="/">
             回首页
           </Link>
         </section>

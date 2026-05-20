@@ -2,6 +2,7 @@ import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
   index("routes/home.tsx"),
+  route("manifest.webmanifest", "routes/manifest.ts"),
   route(":level", "routes/level-home.tsx"),
   route(":level/:type", "routes/resource-list.tsx"),
   route("resources/:resourceId", "routes/resource-detail.tsx"),
