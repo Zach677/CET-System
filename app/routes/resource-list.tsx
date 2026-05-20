@@ -75,11 +75,18 @@ export default function ResourceList({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
 
-        <div className="resource-grid">
-          {loaderData.items.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
-          ))}
-        </div>
+        {loaderData.items.length > 0 ? (
+          <div className="resource-list">
+            {loaderData.items.map((resource) => (
+              <ResourceCard key={resource.id} resource={resource} variant="list" />
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <h3>没有匹配资源</h3>
+            <p>换一个关键词，或回到当前分类先扫完整列表。</p>
+          </div>
+        )}
       </section>
     </SiteShell>
   );

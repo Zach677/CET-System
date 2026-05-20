@@ -14,6 +14,18 @@ import {
 
 import type { Route } from "./+types/resource-detail";
 
+const hostModeLabel = {
+  owned: "站内托管",
+  restricted: "来源受限",
+  external: "外部来源",
+} as const;
+
+const licenseStatusLabel = {
+  owned: "可控授权",
+  restricted: "受限资源",
+  external: "外部授权",
+} as const;
+
 export async function loader({ params }: Route.LoaderArgs) {
   const resource = await getResourceById(params.resourceId);
   if (!resource) {
@@ -36,7 +48,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export default function ResourceDetail({ loaderData }: Route.ComponentProps) {
-  const { resource, related } = loaderData;
+  const { decision, resource, related } = loaderData;
 
   return (
     <SiteShell
@@ -48,47 +60,50 @@ export default function ResourceDetail({ loaderData }: Route.ComponentProps) {
       <section className="content-layout">
         <div className="stack">
           <article className="glass-card detail-card">
-            <div className="detail-card__top">
-              <div className="badge-row">
-                <span className="badge">{resource.source}</span>
-                <span className="badge subtle">{resource.licenseStatus}</span>
-                <span className="badge subtle">{resource.hostMode}</span>
+            <div className="detail-card__header">
+              <div className="detail-card__title-block">
+                <div className="section-kicker">资源状态</div>
+                <h2>{decision.label}</h2>
               </div>
               <FavoriteButton resourceId={resource.id} />
             </div>
 
-            <div className="meta-row">
-              <span>{resource.year}</span>
+            <div className="detail-meta-grid" aria-label="资源元信息">
+              <div>
+                <span>来源</span>
+                <strong>{resource.source}</strong>
+              </div>
+              <div>
+                <span>年份</span>
+                <strong>{resource.year}</strong>
+              </div>
+              <div>
+                <span>托管</span>
+                <strong>{hostModeLabel[resource.hostMode]}</strong>
+              </div>
+              <div>
+                <span>授权</span>
+                <strong>{licenseStatusLabel[resource.licenseStatus]}</strong>
+              </div>
+            </div>
+
+            <div className="meta-row detail-tags">
               <span>{resource.tags.join(" · ")}</span>
             </div>
 
+            <div className="section-kicker">文件清单</div>
             <ul className="file-list">
               {resource.files.map((file) => (
                 <li key={file.path}>
-                  <strong>{file.label}</strong>
-                  <span>
-                    {file.kind.toUpperCase()} · {file.cacheable ? "可手动缓存" : "仅在线播放"}
-                  </span>
+                  <div>
+                    <strong>{file.label}</strong>
+                    <span>{file.kind.toUpperCase()}</span>
+                  </div>
+                  <span>{file.cacheable ? "可手动缓存" : "仅在线播放"}</span>
                 </li>
               ))}
             </ul>
           </article>
-
-          {related.length > 0 ? (
-            <section className="stack">
-              <div className="section-header">
-                <div>
-                  <div className="section-kicker">相关资源</div>
-                  <h2>顺手看这几个</h2>
-                </div>
-              </div>
-              <div className="resource-grid">
-                {related.map((item) => (
-                  <ResourceCard key={item.id} resource={item} />
-                ))}
-              </div>
-            </section>
-          ) : null}
         </div>
 
         <aside className="sidebar-stack">
@@ -102,6 +117,22 @@ export default function ResourceDetail({ loaderData }: Route.ComponentProps) {
           </section>
         </aside>
       </section>
+
+      {related.length > 0 ? (
+        <section className="stack related-resources">
+          <div className="section-header">
+            <div>
+              <div className="section-kicker">相关资源</div>
+              <h2>顺手看这几个</h2>
+            </div>
+          </div>
+          <div className="resource-grid">
+            {related.map((item) => (
+              <ResourceCard key={item.id} resource={item} />
+            ))}
+          </div>
+        </section>
+      ) : null}
     </SiteShell>
   );
 }

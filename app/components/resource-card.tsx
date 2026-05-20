@@ -1,11 +1,23 @@
 import { Link } from "react-router";
 
 import { FavoriteButton } from "~/components/favorite-button";
+import { classNames } from "~/lib/classnames";
 import { levelLabel, typeLabel, type ResourceRecord } from "~/lib/resources";
 
-export function ResourceCard({ resource }: { resource: ResourceRecord }) {
+export function ResourceCard({
+  resource,
+  variant = "card",
+}: {
+  resource: ResourceRecord;
+  variant?: "card" | "list";
+}) {
   return (
-    <article className="resource-card">
+    <article
+      className={classNames(
+        "resource-card",
+        variant === "list" && "resource-card--list",
+      )}
+    >
       <div className="resource-card__top">
         <div className="badge-row">
           <span className="badge">{levelLabel[resource.level]}</span>

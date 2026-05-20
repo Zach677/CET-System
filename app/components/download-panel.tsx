@@ -80,9 +80,19 @@ export function DownloadPanel({ resource }: { resource: ResourceRecord }) {
   }
 
   return (
-    <section className="glass-card action-panel">
+    <section className="glass-card action-panel download-panel">
       <div className="section-kicker">下载与记录</div>
       <h3>站内可控下载</h3>
+      <div className="action-panel__summary" aria-label="下载概览">
+        <div>
+          <strong>{resource.files.length}</strong>
+          <span>文件</span>
+        </div>
+        <div>
+          <strong>{resource.files.filter((file) => file.cacheable).length}</strong>
+          <span>可缓存</span>
+        </div>
+      </div>
       <div className="action-stack">
         {resource.files.map((file) => (
           <Button
