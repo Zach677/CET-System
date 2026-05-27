@@ -68,36 +68,150 @@ function readWranglerConfig() {
   return JSON.parse(stripJsonComments(readFileSync(configPath, "utf8")));
 }
 
-function run(command, args, { allowFailure = false } = {}) {
+function stripAnsi(value) {
+  return value.replace(/\u001b\[[0-9;]*m/g, "");
+}
+
+function run(
+  command,
+  args,
+  { allowFailure = false, stdio = allowFailure ? "pipe" : "inherit" } = {},
+) {
   const result = spawnSync(command, args, {
-    stdio: allowFailure ? "pipe" : "inherit",
+    stdio,
     encoding: "utf8",
   });
 
-  if (result.status !== 0 && !allowFailure) {
+  if (result.error && !allowFailure) {
+    console.error(result.error.message);
+    process.exit(1);
+  }
+
+  if ((result.status ?? 1) !== 0 && !allowFailure) {
     process.exit(result.status ?? 1);
   }
 
   return result;
 }
 
-function outputOf(command, args) {
-  const result = run(command, args, { allowFailure: true });
+function parseWranglerVersion(value) {
+  const match = value.match(/(\d+)\.(\d+)\.(\d+)/);
 
-  if (result.status !== 0) {
-    process.stderr.write(result.stderr || result.stdout);
+  if (!match) {
+    return null;
+  }
+
+  return {
+    major: Number.parseInt(match[1], 10),
+    minor: Number.parseInt(match[2], 10),
+    patch: Number.parseInt(match[3], 10),
+    raw: match[0],
+  };
+}
+
+function isWranglerVersionSupported(version) {
+  if (!version) {
+    return false;
+  }
+
+  if (version.major > 4) {
+    return true;
+  }
+
+  return version.major === 4 && version.minor >= 36;
+}
+
+function ensureWranglerVersion() {
+  const result = run("npx", ["wrangler", "--version"], {
+    allowFailure: true,
+    stdio: "pipe",
+  });
+
+  if (result.error || (result.status ?? 1) !== 0) {
+    console.error("Unable to run Wrangler. Install dependencies first:");
+    console.error("  npm install");
     process.exit(result.status ?? 1);
   }
 
-  return `${result.stdout}\n${result.stderr}`;
+  const output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+  const version = parseWranglerVersion(output);
+
+  if (!isWranglerVersionSupported(version)) {
+    console.error(
+      "Wrangler 4.36.0 or newer is required for Rate Limiting bindings.",
+    );
+    console.error(`Detected: ${version?.raw ?? "unknown"}`);
+    process.exit(1);
+  }
+
+  console.log(`Using Wrangler ${version.raw}`);
+}
+
+function isMissingR2BucketError(detail) {
+  return /not found|does not exist|could not find|missing|404/i.test(detail);
 }
 
 function bucketExists(bucketName) {
-  const output = outputOf("npx", ["wrangler", "r2", "bucket", "list"]);
+  const result = run(
+    "npx",
+    ["wrangler", "r2", "bucket", "info", bucketName, "--json"],
+    {
+      allowFailure: true,
+      stdio: "pipe",
+    },
+  );
 
-  return output
-    .split("\n")
-    .some((line) => line.trim().split(/\s+/).includes(bucketName));
+  if ((result.status ?? 1) === 0) {
+    return true;
+  }
+
+  const detail = stripAnsi(
+    `${result.stdout ?? ""}\n${result.stderr ?? ""}`.trim(),
+  );
+
+  if (isMissingR2BucketError(detail)) {
+    return false;
+  }
+
+  console.error(`Failed to inspect R2 bucket: ${bucketName}`);
+  if (detail) {
+    console.error(detail);
+  }
+  process.exit(result.status ?? 1);
+}
+
+function hasR2Buckets(config) {
+  return (config.r2_buckets ?? []).some((bucket) => bucket.bucket_name);
+}
+
+function ensureCloudflareAuth() {
+  console.log("Checking Cloudflare authentication...");
+  const result = run("npx", ["wrangler", "whoami"], {
+    allowFailure: true,
+    stdio: "pipe",
+  });
+
+  if ((result.status ?? 1) === 0) {
+    return;
+  }
+
+  const detail = stripAnsi(
+    `${result.stdout ?? ""}\n${result.stderr ?? ""}`.trim(),
+  );
+
+  console.error("\nCloudflare authentication is required to create resources.");
+  console.error("Run one of these, then retry `npm run cloudflare:bootstrap`:");
+  console.error("  npm run cloudflare:login");
+  console.error("  CLOUDFLARE_API_TOKEN=<token> npm run cloudflare:bootstrap");
+  console.error(
+    "\nIf Wrangler is running inside a container, use `npm run cloudflare:login -- --callback-host=0.0.0.0` and ensure port 8976 is forwarded.",
+  );
+
+  if (detail) {
+    console.error(`\nWrangler authentication check failed:\n${detail}`);
+  }
+
+  process.exit(result.status ?? 1);
 }
 
 function ensureR2Bucket(bucket) {
@@ -122,6 +236,12 @@ function ensureR2Bucket(bucket) {
 }
 
 const config = readWranglerConfig();
+
+ensureWranglerVersion();
+
+if (!dryRun && hasR2Buckets(config)) {
+  ensureCloudflareAuth();
+}
 
 for (const bucket of config.r2_buckets ?? []) {
   ensureR2Bucket(bucket);
