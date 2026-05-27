@@ -1,37 +1,75 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  createDownloadDecision,
-  getResourceById,
-  listResources,
+  decideResourceDownload,
+  getResourceDetail,
+  jsonResourceRepository,
+  listResourceSummaries,
 } from "~/server/content.server";
 
 describe("content server", () => {
-  it("filters resources by level and type", async () => {
-    const listening = await listResources({ level: "cet4", type: "listening" });
+  it("exports summary service models without file bodies", async () => {
+    const listening = await listResourceSummaries({
+      level: "cet4",
+      type: "listening",
+    });
 
     expect(listening).toHaveLength(1);
     expect(listening[0]?.id).toBe("cet4-listening-welearn");
+    expect(listening[0]).not.toHaveProperty("files");
   });
 
-  it("returns full details for a resource", async () => {
-    const resource = await getResourceById("cet6-writing-templates");
+  it("exports detail service models with files", async () => {
+    const detail = await getResourceDetail("cet6-writing-templates");
 
-    expect(resource?.title).toBe("六级写作模板与高分表达");
-    expect(resource?.files).toHaveLength(1);
+    expect(detail?.title).toBe("六级写作模板与高分表达");
+    expect(detail?.files).toHaveLength(1);
   });
 
-  it("allows signed downloads only for owned resources", async () => {
-    const owned = await getResourceById("cet4-paper-2024-12-a");
-    const restricted = await getResourceById("cet4-listening-welearn");
+  it("exports download service decisions", async () => {
+    const owned = await decideResourceDownload({
+      resourceId: "cet4-paper-2024-12-a",
+      filePath: "papers/cet4-paper-2024-12-a.pdf",
+      requestUrl:
+        "https://cet.example/api/resources/cet4-paper-2024-12-a/download",
+    });
+    const restricted = await decideResourceDownload({
+      resourceId: "cet4-listening-welearn",
+      filePath: "anything.pdf",
+      requestUrl:
+        "https://cet.example/api/resources/cet4-listening-welearn/download",
+    });
 
-    expect(createDownloadDecision(owned!)).toMatchObject({
-      kind: "signed",
-      enabled: true,
+    expect(owned).toMatchObject({
+      ok: true,
+      payload: {
+        kind: "signed",
+      },
     });
-    expect(createDownloadDecision(restricted!)).toMatchObject({
-      kind: "external",
-      enabled: false,
+    expect(restricted).toMatchObject({
+      ok: false,
+      error: {
+        code: "download_not_supported",
+      },
     });
+  });
+
+  it("exports the JSON resource repository", async () => {
+    const resource = await jsonResourceRepository.findById(
+      "cet4-paper-2024-12-a",
+    );
+
+    expect(resource).toMatchObject({
+      id: "cet4-paper-2024-12-a",
+      hostMode: "owned",
+      downloadPolicy: "signed",
+    });
+    expect(await jsonResourceRepository.list({ level: "cet4" })).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "cet4-paper-2024-12-a",
+        }),
+      ]),
+    );
   });
 });
