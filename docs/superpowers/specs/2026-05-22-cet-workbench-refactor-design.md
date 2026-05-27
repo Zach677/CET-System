@@ -380,12 +380,12 @@ It avoids premature DB work while preventing the current JSON shape from leaking
 - Risk: UI redesign becomes decorative.
   - Mitigation: tie every screen to a workbench task and keep home/dashboard, library, detail, and import flows usable first.
 
-## Open Decisions Before Coding Phase 2
+## Decisions Before Coding Phase 2
 
-- Whether Import appears as a top-level route immediately or behind a secondary action.
-- Whether user-private state stays anonymous/local-only for longer or gets account sync in phase 4.
-- Which DB target to use when migration starts.
-- Which object storage provider is primary in production: Cloudflare R2, S3, or compatible S3 API.
+- Import should appear as a top-level route because it is the workbench differentiator. The first version can be a guided skeleton, but it must use the final service/storage boundaries.
+- User-private study state stays anonymous and local-only for longer. Account sync is deferred until it becomes a product requirement.
+- DB target for the migration phase is Neon Postgres via Cloudflare Hyperdrive; see `docs/database-storage-plan.md`.
+- Primary production object storage is Cloudflare R2. Keep S3-compatible metadata fields, but do not split active storage across providers yet.
 
 ## Implementation Readiness Checklist
 
