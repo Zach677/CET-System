@@ -39,7 +39,7 @@ export type OwnedResourceFileSuccess = {
 
 type DownloadDecisionInput = {
   resourceId: string;
-  filePath: string;
+  filePath?: string | null;
   requestUrl: string;
   publicBaseUrl?: string;
   repository?: ResourceRepository;
@@ -47,7 +47,7 @@ type DownloadDecisionInput = {
 
 type OwnedResourceFileInput = {
   resourceId: string;
-  filePath: string;
+  filePath?: string | null;
   repository?: ResourceRepository;
 };
 
@@ -146,8 +146,8 @@ export async function decideResourceDownload({
 
   const trimmedPublicBaseUrl = publicBaseUrl?.trim();
   const url = trimmedPublicBaseUrl
-    ? buildPublicDownloadUrl(trimmedPublicBaseUrl, filePath)
-    : buildGatewayDownloadUrl(requestUrl, resourceId, filePath);
+    ? buildPublicDownloadUrl(trimmedPublicBaseUrl, ownedFile.file.path)
+    : buildGatewayDownloadUrl(requestUrl, resourceId, ownedFile.file.path);
 
   return {
     ok: true,

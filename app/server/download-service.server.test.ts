@@ -54,7 +54,7 @@ describe("download service", () => {
       resourceId: "owned-paper",
       filePath: "papers/owned-paper.pdf",
       requestUrl: "https://cet.example/api/resources/owned-paper/download",
-      publicBaseUrl: "https://cdn.example/resources/",
+      publicBaseUrl: "https://cdn.example/resources///",
       repository,
     });
 
@@ -80,6 +80,21 @@ describe("download service", () => {
       filePath: "papers/owned-paper.pdf",
       requestUrl: "https://cet.example/api/resources/owned-paper/download",
       publicBaseUrl: "",
+      repository,
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.ok ? result.payload.url : "").toBe(
+      "https://cet.example/api/resources/owned-paper/file?path=papers%2Fowned-paper.pdf",
+    );
+  });
+
+  it("clears the request query when building a gateway URL", async () => {
+    const result = await decideResourceDownload({
+      resourceId: "owned-paper",
+      filePath: "papers/owned-paper.pdf",
+      requestUrl:
+        "https://cet.example/api/resources/owned-paper/download?token=stale&path=wrong.pdf",
       repository,
     });
 
@@ -178,6 +193,35 @@ describe("download service", () => {
       getOwnedResourceFile({
         resourceId: "owned-paper",
         filePath: "missing.pdf",
+        repository,
+      }),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 404,
+      error: {
+        code: "file_not_found",
+        message: "文件不存在",
+      },
+    });
+
+    await expect(
+      getOwnedResourceFile({
+        resourceId: "owned-paper",
+        filePath: null,
+        repository,
+      }),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 404,
+      error: {
+        code: "file_not_found",
+        message: "文件不存在",
+      },
+    });
+
+    await expect(
+      getOwnedResourceFile({
+        resourceId: "owned-paper",
         repository,
       }),
     ).resolves.toMatchObject({
