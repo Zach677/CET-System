@@ -1,65 +1,42 @@
-import cet4ResourcesJson from "../../content/cet4/resources.json";
-import cet6ResourcesJson from "../../content/cet6/resources.json";
-
+import type { ResourceRecord } from "~/lib/resources";
 import {
-  levelLabel,
-  resourceCollectionSchema,
-  typeLabel,
-  type ExamLevel,
-  type ResourceRecord,
-  type ResourceType,
-} from "~/lib/resources";
+  jsonResourceRepository,
+  type ResourceFilters,
+} from "~/server/resource-repository.server";
 
-type ResourceFilters = {
-  level?: ExamLevel;
-  type?: ResourceType;
-  query?: string;
-};
+export { jsonResourceRepository } from "~/server/resource-repository.server";
+export type {
+  ResourceFilters,
+  ResourceRepository,
+} from "~/server/resource-repository.server";
+export {
+  getHomeOverview,
+  getLevelOverview,
+  getResourceDetail,
+  listResourceSummaries,
+  searchResourceSummaries,
+} from "~/server/resource-service.server";
+export {
+  decideResourceDownload,
+  getOwnedResourceFile,
+} from "~/server/download-service.server";
 
 export type DownloadDecision =
   | { kind: "signed"; enabled: true; label: string }
   | { kind: "external"; enabled: false; label: string }
   | { kind: "none"; enabled: false; label: string };
 
-const resources = resourceCollectionSchema
-  .parse([...cet4ResourcesJson, ...cet6ResourcesJson])
-  .sort(
-    (left, right) =>
-      right.year - left.year || left.title.localeCompare(right.title, "zh-CN"),
-  );
-
-export async function loadResources() {
-  return resources;
-}
-
 export async function listResources(filters: ResourceFilters = {}) {
-  const normalizedQuery = filters.query?.trim().toLowerCase();
-
-  return resources.filter((resource) => {
-    if (filters.level && resource.level !== filters.level) {
-      return false;
-    }
-
-    if (filters.type && resource.type !== filters.type) {
-      return false;
-    }
-
-    if (!normalizedQuery) {
-      return true;
-    }
-
-    return [resource.title, resource.summary, resource.tags.join(" ")]
-      .join(" ")
-      .toLowerCase()
-      .includes(normalizedQuery);
-  });
+  return jsonResourceRepository.list(filters);
 }
 
 export async function getResourceById(resourceId: string) {
-  return resources.find((resource) => resource.id === resourceId) ?? null;
+  return jsonResourceRepository.findById(resourceId);
 }
 
-export function createDownloadDecision(resource: ResourceRecord): DownloadDecision {
+export function createDownloadDecision(
+  resource: ResourceRecord,
+): DownloadDecision {
   if (
     resource.downloadPolicy === "signed" &&
     resource.hostMode === "owned" &&
@@ -73,48 +50,4 @@ export function createDownloadDecision(resource: ResourceRecord): DownloadDecisi
   }
 
   return { kind: "none", enabled: false, label: "当前不可下载" };
-}
-
-export async function getLevelOverview(level: ExamLevel) {
-  const levelResources = await listResources({ level });
-
-  const buckets = Object.entries(typeLabel).map(([type, label]) => {
-    const matches = levelResources.filter((resource) => resource.type === type);
-    return {
-      type: type as ResourceType,
-      label,
-      count: matches.length,
-      latest: matches.slice(0, 2),
-    };
-  });
-
-  return {
-    level,
-    label: levelLabel[level],
-    total: levelResources.length,
-    buckets,
-  };
-}
-
-export async function getHomeOverview() {
-  const [cet4, cet6] = await Promise.all([
-    getLevelOverview("cet4"),
-    getLevelOverview("cet6"),
-  ]);
-
-  return {
-    levels: [cet4, cet6],
-    highlights: resources.slice(0, 5),
-  };
-}
-
-export async function listRelatedResources(resource: ResourceRecord, limit = 3) {
-  return resources
-    .filter(
-      (entry) =>
-        entry.id !== resource.id &&
-        entry.level === resource.level &&
-        entry.type !== resource.type,
-    )
-    .slice(0, limit);
 }

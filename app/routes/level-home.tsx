@@ -4,7 +4,7 @@ import { LocalSummary } from "~/components/local-summary";
 import { SiteShell } from "~/components/site-shell";
 import { buttonClassName } from "~/components/ui/button-styles";
 import { examLevelSchema, typeLabel } from "~/lib/resources";
-import { getLevelOverview } from "~/server/content.server";
+import { getLevelOverview } from "~/server/resource-service.server";
 
 import type { Route } from "./+types/level-home";
 

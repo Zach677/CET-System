@@ -1,12 +1,17 @@
-import { getResourceById } from "~/server/content.server";
+import { jsonError } from "~/server/api-error.server";
+import { getResourceDetail } from "~/server/resource-service.server";
 
 import type { Route } from "./+types/api.resource";
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const resource = await getResourceById(params.resourceId);
-  if (!resource) {
-    return Response.json({ message: "资源不存在" }, { status: 404 });
+  const detail = await getResourceDetail(params.resourceId);
+  if (!detail) {
+    return jsonError("resource_not_found", "资源不存在", 404);
   }
 
-  return Response.json(resource);
+  return Response.json(detail, {
+    headers: {
+      "cache-control": "public, max-age=60",
+    },
+  });
 }

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { buttonClassName } from "~/components/ui/button-styles";
 import { createLocalFirstStore } from "~/lib/local-first";
-import type { ResourceRecord } from "~/lib/resources";
+import type { ResourceDownloadPanelView } from "~/lib/resource-view-models";
 
 const store = createLocalFirstStore();
 
@@ -12,34 +12,78 @@ type DownloadState =
   | { kind: "loading"; fileLabel: string }
   | { kind: "error"; message: string };
 
-export function DownloadPanel({ resource }: { resource: ResourceRecord }) {
+export function DownloadPanel({
+  download,
+}: {
+  download: ResourceDownloadPanelView;
+}) {
   const [state, setState] = useState<DownloadState>({ kind: "idle" });
 
-  async function handleDownload(filePath: string, fileLabel: string, cacheable: boolean) {
+  if (download.mode === "external") {
+    return (
+      <section className="glass-card action-panel">
+        <div className="section-kicker">来源限制</div>
+        <h3>{download.title}</h3>
+        <p>{download.description}</p>
+        <a
+          className={buttonClassName({ variant: "primary" })}
+          href={download.externalUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          前往原始来源
+        </a>
+      </section>
+    );
+  }
+
+  if (download.mode === "unavailable") {
+    return (
+      <section className="glass-card action-panel">
+        <div className="section-kicker">来源限制</div>
+        <h3>{download.title}</h3>
+        <p>{download.description}</p>
+        <Button disabled>
+          当前无可用下载
+        </Button>
+      </section>
+    );
+  }
+
+  const ownedDownload = download;
+
+  async function handleDownload(
+    filePath: string,
+    fileLabel: string,
+    cacheable: boolean,
+  ) {
     setState({ kind: "loading", fileLabel });
 
-    const response = await fetch(`/api/resources/${resource.id}/download`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `/api/resources/${ownedDownload.resourceId}/download`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ filePath }),
       },
-      body: JSON.stringify({ filePath }),
-    });
+    );
 
     if (!response.ok) {
       const payload = (await response.json().catch(() => null)) as
-        | { message?: string }
+        | { error?: { message?: string } }
         | null;
       setState({
         kind: "error",
-        message: payload?.message ?? "下载入口暂时没拿到。",
+        message: payload?.error?.message ?? "下载入口暂时没拿到。",
       });
       return;
     }
 
     const payload = (await response.json()) as { url: string };
     if (cacheable) {
-      await store.markCached(resource.id, fileLabel);
+      await store.markCached(ownedDownload.resourceId, fileLabel);
     }
     window.location.assign(payload.url);
     setState({ kind: "idle" });
@@ -47,54 +91,30 @@ export function DownloadPanel({ resource }: { resource: ResourceRecord }) {
 
   async function markStudy() {
     await store.recordStudy({
-      resourceId: resource.id,
-      durationMinutes: resource.type === "listening" ? 20 : 30,
-      bucket: resource.type,
+      resourceId: ownedDownload.resourceId,
+      durationMinutes: ownedDownload.resourceType === "listening" ? 20 : 30,
+      bucket: ownedDownload.resourceType,
       note: "从资源详情页手动记录",
     });
     setState({ kind: "idle" });
   }
 
-  if (resource.hostMode === "restricted" || resource.downloadPolicy === "none") {
-    return (
-      <section className="glass-card action-panel">
-        <div className="section-kicker">来源限制</div>
-        <h3>这类资源不站内托管</h3>
-        <p>{resource.summary}</p>
-        {resource.externalUrl ? (
-          <a
-            className={buttonClassName({ variant: "primary" })}
-            href={resource.externalUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            前往原始来源
-          </a>
-        ) : (
-          <Button disabled>
-            当前无可用下载
-          </Button>
-        )}
-      </section>
-    );
-  }
-
   return (
     <section className="glass-card action-panel download-panel">
       <div className="section-kicker">下载与记录</div>
-      <h3>站内可控下载</h3>
+      <h3>{ownedDownload.title}</h3>
       <div className="action-panel__summary" aria-label="下载概览">
         <div>
-          <strong>{resource.files.length}</strong>
+          <strong>{ownedDownload.fileCount}</strong>
           <span>文件</span>
         </div>
         <div>
-          <strong>{resource.files.filter((file) => file.cacheable).length}</strong>
+          <strong>{ownedDownload.cacheableFileCount}</strong>
           <span>可缓存</span>
         </div>
       </div>
       <div className="action-stack">
-        {resource.files.map((file) => (
+        {ownedDownload.files.map((file) => (
           <Button
             key={file.path}
             variant="primary"
@@ -113,7 +133,7 @@ export function DownloadPanel({ resource }: { resource: ResourceRecord }) {
       </div>
       {state.kind === "error" && <p className="error-text">{state.message}</p>}
       <p className="meta-line">
-        文件从 Worker 网关读取，不直接暴露 R2 桶权限。
+        下载入口会先经过服务端策略检查。
       </p>
     </section>
   );

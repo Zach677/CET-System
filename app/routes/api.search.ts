@@ -1,19 +1,19 @@
-import searchIndex from "../../content/generated/search-index.json";
+import { searchResourceSummaries } from "~/server/resource-service.server";
 
 import type { Route } from "./+types/api.search";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
-  const query = (url.searchParams.get("q") ?? "").trim().toLowerCase();
+  const query = url.searchParams.get("q") ?? "";
 
-  const items = query
-    ? searchIndex.filter((entry) =>
-        [entry.title, entry.summary, entry.tags.join(" ")]
-          .join(" ")
-          .toLowerCase()
-          .includes(query),
-      )
-    : searchIndex;
+  const items = await searchResourceSummaries(query);
 
-  return Response.json({ items });
+  return Response.json(
+    { items },
+    {
+      headers: {
+        "cache-control": "public, max-age=60",
+      },
+    },
+  );
 }

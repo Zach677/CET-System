@@ -2,13 +2,13 @@ import { Link } from "react-router";
 
 import { FavoriteButton } from "~/components/favorite-button";
 import { classNames } from "~/lib/classnames";
-import { levelLabel, typeLabel, type ResourceRecord } from "~/lib/resources";
+import type { ResourceSummaryView } from "~/lib/resource-view-models";
 
 export function ResourceCard({
   resource,
   variant = "card",
 }: {
-  resource: ResourceRecord;
+  resource: ResourceSummaryView;
   variant?: "card" | "list";
 }) {
   return (
@@ -20,8 +20,8 @@ export function ResourceCard({
     >
       <div className="resource-card__top">
         <div className="badge-row">
-          <span className="badge">{levelLabel[resource.level]}</span>
-          <span className="badge">{typeLabel[resource.type]}</span>
+          <span className="badge">{resource.levelLabel}</span>
+          <span className="badge">{resource.typeLabel}</span>
           <span className="badge subtle">{resource.source}</span>
         </div>
         <FavoriteButton resourceId={resource.id} compact />
@@ -35,7 +35,7 @@ export function ResourceCard({
       <div className="resource-card__footer">
         <div className="meta-row">
           <span>{resource.year}</span>
-          <span>{resource.tags.join(" · ")}</span>
+          <span>{resource.tagLine}</span>
         </div>
         <Link className="text-link" to={`/resources/${resource.id}`}>
           看详情

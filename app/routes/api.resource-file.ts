@@ -1,24 +1,25 @@
-import { getResourceById } from "~/server/content.server";
+import { jsonError } from "~/server/api-error.server";
+import { getOwnedResourceFile } from "~/server/download-service.server";
 
 import type { Route } from "./+types/api.resource-file";
 
 export async function loader({ request, params, context }: Route.LoaderArgs) {
-  const resource = await getResourceById(params.resourceId);
-  if (!resource) {
-    return new Response("Not Found", { status: 404 });
-  }
-
   const url = new URL(request.url);
   const path = url.searchParams.get("path");
-  const file = resource.files.find((entry) => entry.path === path);
+  const result = await getOwnedResourceFile({
+    resourceId: params.resourceId,
+    filePath: path,
+  });
 
-  if (!file || resource.hostMode !== "owned") {
-    return new Response("Forbidden", { status: 403 });
+  if (!result.ok) {
+    return jsonError(result.error.code, result.error.message, result.status);
   }
 
-  const object = await context.cloudflare.env.RESOURCE_BUCKET.get(file.path);
+  const object = await context.cloudflare.env.RESOURCE_BUCKET.get(
+    result.file.path,
+  );
   if (!object) {
-    return new Response("Missing file", { status: 404 });
+    return jsonError("storage_object_missing", "文件暂时不可用", 404);
   }
 
   const headers = new Headers();
@@ -26,7 +27,9 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   headers.set("etag", object.httpEtag);
   headers.set(
     "content-disposition",
-    `attachment; filename*=UTF-8''${encodeURIComponent(file.path.split("/").pop() ?? file.label)}`,
+    `attachment; filename*=UTF-8''${encodeURIComponent(
+      result.file.path.split("/").pop() ?? result.file.label,
+    )}`,
   );
 
   return new Response(object.body, { headers });

@@ -6,7 +6,7 @@ import { ResourceCard } from "~/components/resource-card";
 import { SiteShell } from "~/components/site-shell";
 import { Button } from "~/components/ui/button";
 import { examLevelSchema, typeFromSlug, typeLabel } from "~/lib/resources";
-import { listResources } from "~/server/content.server";
+import { listResourceSummaries } from "~/server/resource-service.server";
 
 import type { Route } from "./+types/resource-list";
 
@@ -16,7 +16,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q") ?? "";
 
-  const items = await listResources({
+  const items = await listResourceSummaries({
     level,
     type,
     query: q,
