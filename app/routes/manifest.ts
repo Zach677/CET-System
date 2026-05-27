@@ -4,8 +4,8 @@ export function loader() {
       name: "CET 备考工作台",
       short_name: "CET 工作台",
       description: "给四六级备考用的极简工作台。",
-      theme_color: "#f5f5f2",
-      background_color: "#f5f5f2",
+      theme_color: "#010102",
+      background_color: "#010102",
       display: "standalone",
       start_url: "/",
       icons: [

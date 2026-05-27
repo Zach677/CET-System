@@ -26,8 +26,8 @@ export function meta({ data }: Route.MetaArgs) {
 export default function LevelHome({ loaderData }: Route.ComponentProps) {
   return (
     <SiteShell
-      title={`${loaderData.label}备考舱`}
-      description="这里不堆满一屏噪音。先看每个模块的量，再点进真正要学的那一类。"
+      title={`${loaderData.label}资源概览`}
+      description="先看每个模块的资源量，再进入真正要学的分类。列表页负责筛选，详情页负责下载和记录。"
       eyebrow={loaderData.label}
       level={loaderData.level}
     >

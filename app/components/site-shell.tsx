@@ -27,47 +27,59 @@ export function SiteShell({
 }) {
   return (
     <div className="page-shell">
-      <header className="site-header">
-        <div className="site-header__inner">
-          <Link className="brand-mark" to="/">
-            CET Workbench
-          </Link>
-          <nav className="brand-nav" aria-label="主导航">
-            <NavLink to="/" end>
-              首页
-            </NavLink>
-            {levelTabs.map((tab) => (
-              <NavLink key={tab.level} to={`/${tab.level}`}>
-                {tab.label}
+      <a className="skip-link" href="#main-content">
+        跳到内容
+      </a>
+      <div className="app-shell">
+        <aside className="site-sidebar" aria-label="工作台导航">
+          <div className="site-sidebar__inner">
+            <Link className="brand-mark" to="/">
+              <span className="brand-glyph" aria-hidden="true">
+                C
+              </span>
+              <span>CET Workbench</span>
+            </Link>
+            <nav className="brand-nav" aria-label="主导航">
+              <NavLink to="/" end>
+                首页
               </NavLink>
-            ))}
-          </nav>
-          <ThemeToggle />
-        </div>
-      </header>
+              {levelTabs.map((tab) => (
+                <NavLink key={tab.level} to={`/${tab.level}`}>
+                  {tab.label}
+                </NavLink>
+              ))}
+            </nav>
 
-      <main className="page-main">
-        <section className="hero-block">
-          {eyebrow ? <div className="section-kicker">{eyebrow}</div> : null}
-          <h1>{title}</h1>
-          <p>{description}</p>
-        </section>
+            {level ? (
+              <nav className="section-tabs" aria-label="分类导航">
+                <span className="nav-label">资源分类</span>
+                <NavLink to={`/${level}`} end>
+                  概览
+                </NavLink>
+                {typeTabs.map((tab) => (
+                  <NavLink key={tab.type} to={`/${level}/${tab.type}`}>
+                    {tab.label}
+                  </NavLink>
+                ))}
+              </nav>
+            ) : null}
 
-        {level ? (
-          <nav className="section-tabs" aria-label="分类导航">
-            <NavLink to={`/${level}`} end>
-              概览
-            </NavLink>
-            {typeTabs.map((tab) => (
-              <NavLink key={tab.type} to={`/${level}/${tab.type}`}>
-                {tab.label}
-              </NavLink>
-            ))}
-          </nav>
-        ) : null}
+            <div className="sidebar-footer">
+              <ThemeToggle />
+            </div>
+          </div>
+        </aside>
 
-        {children}
-      </main>
+        <main className="page-main" id="main-content">
+          <section className="page-heading">
+            {eyebrow ? <div className="section-kicker">{eyebrow}</div> : null}
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </section>
+
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

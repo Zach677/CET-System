@@ -25,8 +25,8 @@ export async function loader() {
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <SiteShell
-      title="极简一点，但真能用。"
-      description="先从四级或六级进入，再进真题、模拟、专项、听力和资源。站内托管只放可控内容，高风险平台资源只做说明和跳转。"
+      title="CET 备考工作台"
+      description="从四级或六级进入，按真题、模拟、专项、听力和资源整理材料。站内托管只放可控内容，受限来源只保留说明和跳转。"
       eyebrow="CET 备考工作台"
     >
       <section className="card-grid card-grid--two">

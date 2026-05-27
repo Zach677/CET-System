@@ -12,7 +12,7 @@ export function getThemeSelectionFromStorage(
     return value as ThemeSelection;
   }
 
-  return "system";
+  return "dark";
 }
 
 export function resolveTheme(
@@ -37,7 +37,7 @@ export function themeBootScript(): string {
       const stored = localStorage.getItem(storageKey);
       const selection = stored === "light" || stored === "dark" || stored === "system"
         ? stored
-        : "system";
+        : "dark";
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";

@@ -22,20 +22,23 @@ export function ResourceCard({
         <div className="badge-row">
           <span className="badge">{resource.levelLabel}</span>
           <span className="badge">{resource.typeLabel}</span>
-          <span className="badge subtle">{resource.source}</span>
         </div>
         <FavoriteButton resourceId={resource.id} compact />
       </div>
       <div className="resource-card__body">
-        <h3>
-          <Link to={`/resources/${resource.id}`}>{resource.title}</Link>
-        </h3>
+        <div className="resource-card__title-row">
+          <h3>
+            <Link to={`/resources/${resource.id}`}>{resource.title}</Link>
+          </h3>
+          <span className="resource-card__year">{resource.year}</span>
+        </div>
         <p>{resource.summary}</p>
       </div>
       <div className="resource-card__footer">
         <div className="meta-row">
-          <span>{resource.year}</span>
+          <span>{resource.source}</span>
           <span>{resource.tagLine}</span>
+          <span>{resource.fileCount} 个文件</span>
         </div>
         <Link className="text-link" to={`/resources/${resource.id}`}>
           看详情

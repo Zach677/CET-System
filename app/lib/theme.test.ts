@@ -24,7 +24,7 @@ describe("theme helpers", () => {
 
   it("ignores invalid storage values", () => {
     expect(getThemeSelectionFromStorage("dark")).toBe("dark");
-    expect(getThemeSelectionFromStorage("nope")).toBe("system");
-    expect(getThemeSelectionFromStorage(null)).toBe("system");
+    expect(getThemeSelectionFromStorage("nope")).toBe("dark");
+    expect(getThemeSelectionFromStorage(null)).toBe("dark");
   });
 });
