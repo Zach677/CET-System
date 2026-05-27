@@ -6,6 +6,7 @@ import {
   type LevelOverviewView,
   type ResourceDetailView,
   type ResourceDownloadPanelView,
+  type ResourceFactView,
   type ResourceFileView,
   type ResourceSummaryView,
 } from "~/lib/resource-view-models";
@@ -23,11 +24,11 @@ import {
   type ResourceRepository,
 } from "~/server/resource-repository.server";
 
-function countCacheableFiles(files: ResourceFile[]) {
+function countCacheableFiles(files: ResourceFile[]): number {
   return files.filter((file) => file.cacheable).length;
 }
 
-function toTagLine(tags: string[]) {
+function toTagLine(tags: string[]): string {
   return tags.join(" · ");
 }
 
@@ -62,7 +63,7 @@ function toResourceFileView(file: ResourceFile): ResourceFileView {
   };
 }
 
-function toResourceFacts(resource: ResourceRecord) {
+function toResourceFacts(resource: ResourceRecord): ResourceFactView[] {
   return [
     { label: "来源", value: resource.source },
     { label: "年份", value: String(resource.year) },
@@ -132,14 +133,16 @@ function toResourceDetailView(
   };
 }
 
-function repositoryOrDefault(repository?: ResourceRepository) {
+function repositoryOrDefault(
+  repository?: ResourceRepository,
+): ResourceRepository {
   return repository ?? jsonResourceRepository;
 }
 
 export async function listResourceSummaries(
   filters: ResourceFilters = {},
   repository?: ResourceRepository,
-) {
+): Promise<ResourceSummaryView[]> {
   const resources = await repositoryOrDefault(repository).list(filters);
 
   return resources.map(toResourceSummaryView);
@@ -148,14 +151,14 @@ export async function listResourceSummaries(
 export async function searchResourceSummaries(
   query: string,
   repository?: ResourceRepository,
-) {
+): Promise<ResourceSummaryView[]> {
   return listResourceSummaries({ query }, repository);
 }
 
 export async function getResourceDetail(
   resourceId: string,
   repository?: ResourceRepository,
-) {
+): Promise<ResourceDetailView | null> {
   const resourceRepository = repositoryOrDefault(repository);
   const resource = await resourceRepository.findById(resourceId);
 
@@ -191,7 +194,7 @@ export async function getLevelOverview(
       type: resourceType,
       label,
       count: latest.length,
-      latest,
+      latest: latest.slice(0, 2),
     };
   });
 

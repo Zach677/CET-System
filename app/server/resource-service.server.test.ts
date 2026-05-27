@@ -128,6 +128,43 @@ describe("resource service", () => {
     });
   });
 
+  it("returns null when a detail resource is missing", async () => {
+    await expect(
+      getResourceDetail("missing-resource", repository),
+    ).resolves.toBeNull();
+  });
+
+  it("uses an unavailable download panel when no download path is available", async () => {
+    const unavailableRepository = createJsonResourceRepository([
+      {
+        id: "cet6-vocabulary-plan",
+        level: "cet6",
+        type: "skills",
+        title: "六级词汇计划",
+        summary: "暂不提供下载。",
+        year: 2025,
+        source: "编辑部整理",
+        licenseStatus: "owned",
+        hostMode: "owned",
+        downloadPolicy: "none",
+        externalUrl: null,
+        tags: ["词汇"],
+        files: [],
+      },
+    ]);
+
+    const detail = await getResourceDetail(
+      "cet6-vocabulary-plan",
+      unavailableRepository,
+    );
+
+    expect(detail?.download).toEqual({
+      mode: "unavailable",
+      title: "当前不可下载",
+      description: "暂不提供下载。",
+    });
+  });
+
   it("builds level and home overviews from summaries", async () => {
     const level = await getLevelOverview("cet4", repository);
     const home = await getHomeOverview(repository);
@@ -141,6 +178,64 @@ describe("resource service", () => {
     });
     expect(home.levels.map((entry) => entry.level)).toEqual(["cet4", "cet6"]);
     expect(home.highlights[0]?.id).toBe("cet4-paper-2025");
+  });
+
+  it("keeps bucket count complete while capping latest summaries", async () => {
+    const overviewRepository = createJsonResourceRepository([
+      {
+        id: "cet4-paper-2025",
+        level: "cet4",
+        type: "papers",
+        title: "2025年6月四级真题",
+        summary: "最新真题。",
+        year: 2025,
+        source: "自建整理",
+        licenseStatus: "owned",
+        hostMode: "owned",
+        downloadPolicy: "signed",
+        externalUrl: null,
+        tags: ["真题"],
+        files: [],
+      },
+      {
+        id: "cet4-paper-2024",
+        level: "cet4",
+        type: "papers",
+        title: "2024年12月四级真题",
+        summary: "上一套真题。",
+        year: 2024,
+        source: "自建整理",
+        licenseStatus: "owned",
+        hostMode: "owned",
+        downloadPolicy: "signed",
+        externalUrl: null,
+        tags: ["真题"],
+        files: [],
+      },
+      {
+        id: "cet4-paper-2023",
+        level: "cet4",
+        type: "papers",
+        title: "2023年12月四级真题",
+        summary: "较早真题。",
+        year: 2023,
+        source: "自建整理",
+        licenseStatus: "owned",
+        hostMode: "owned",
+        downloadPolicy: "signed",
+        externalUrl: null,
+        tags: ["真题"],
+        files: [],
+      },
+    ]);
+
+    const level = await getLevelOverview("cet4", overviewRepository);
+    const papers = level.buckets.find((bucket) => bucket.type === "papers");
+
+    expect(papers).toMatchObject({
+      count: 3,
+    });
+    expect(papers?.latest).toHaveLength(2);
   });
 
   it("searches summaries through the repository query path", async () => {
