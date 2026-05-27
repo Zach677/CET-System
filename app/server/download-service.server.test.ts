@@ -157,4 +157,51 @@ describe("download service", () => {
       },
     });
   });
+
+  it("denies gateway file access with the same owned-resource failures", async () => {
+    await expect(
+      getOwnedResourceFile({
+        resourceId: "missing",
+        filePath: "papers/owned-paper.pdf",
+        repository,
+      }),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 404,
+      error: {
+        code: "resource_not_found",
+        message: "资源不存在",
+      },
+    });
+
+    await expect(
+      getOwnedResourceFile({
+        resourceId: "owned-paper",
+        filePath: "missing.pdf",
+        repository,
+      }),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 404,
+      error: {
+        code: "file_not_found",
+        message: "文件不存在",
+      },
+    });
+
+    await expect(
+      getOwnedResourceFile({
+        resourceId: "restricted-guide",
+        filePath: "anything.pdf",
+        repository,
+      }),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 400,
+      error: {
+        code: "download_not_supported",
+        message: "该资源不支持站内下载",
+      },
+    });
+  });
 });
