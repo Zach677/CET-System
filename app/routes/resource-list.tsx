@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Form } from "react-router";
 import { Field } from "@base-ui/react/field";
 import { Input } from "@base-ui/react/input";
@@ -41,6 +42,12 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export default function ResourceList({ loaderData }: Route.ComponentProps) {
+  const [query, setQuery] = useState(loaderData.q);
+
+  useEffect(() => {
+    setQuery(loaderData.q);
+  }, [loaderData.q]);
+
   return (
     <SiteShell
       title={typeLabel[loaderData.type]}
@@ -57,7 +64,8 @@ export default function ResourceList({ loaderData }: Route.ComponentProps) {
                 id="q"
                 name="q"
                 type="search"
-                defaultValue={loaderData.q}
+                value={query}
+                onChange={(event) => setQuery(event.currentTarget.value)}
                 placeholder={`搜 ${typeLabel[loaderData.type]}…`}
                 className="search-input"
               />
