@@ -22,9 +22,11 @@ export type DownloadSuccess = {
   };
 };
 
+export type DownloadBudgetMode = "open" | "decision-only" | "closed";
+
 export type DownloadFailure = {
   ok: false;
-  status: 400 | 404;
+  status: 400 | 404 | 503;
   error: {
     code: ApiErrorCode;
     message: string;
@@ -42,12 +44,14 @@ type DownloadDecisionInput = {
   filePath?: string | null;
   requestUrl: string;
   publicBaseUrl?: string;
+  budgetMode?: DownloadBudgetMode | string | null;
   repository?: ResourceRepository;
 };
 
 type OwnedResourceFileInput = {
   resourceId: string;
   filePath?: string | null;
+  budgetMode?: DownloadBudgetMode | string | null;
   repository?: ResourceRepository;
 };
 
@@ -58,7 +62,7 @@ function repositoryOrDefault(repository?: ResourceRepository): ResourceRepositor
 function downloadFailure(
   code: ApiErrorCode,
   message: string,
-  status: 400 | 404,
+  status: 400 | 404 | 503,
 ): DownloadFailure {
   return {
     ok: false,
@@ -68,6 +72,24 @@ function downloadFailure(
       message,
     },
   };
+}
+
+export function parseDownloadBudgetMode(
+  value: string | null | undefined,
+): DownloadBudgetMode {
+  if (value === "decision-only" || value === "closed") {
+    return value;
+  }
+
+  return "open";
+}
+
+function gatewayDisabledFailure(): DownloadFailure {
+  return downloadFailure(
+    "download_budget_limited",
+    "站内文件网关暂时关闭，避免产生异常成本",
+    503,
+  );
 }
 
 function toDownloadFilePayload(file: ResourceFile): DownloadFilePayload {
@@ -98,8 +120,13 @@ function buildGatewayDownloadUrl(
 export async function getOwnedResourceFile({
   resourceId,
   filePath,
+  budgetMode,
   repository,
 }: OwnedResourceFileInput): Promise<OwnedResourceFileSuccess | DownloadFailure> {
+  if (parseDownloadBudgetMode(budgetMode) !== "open") {
+    return gatewayDisabledFailure();
+  }
+
   const resource = await repositoryOrDefault(repository).findById(resourceId);
 
   if (!resource) {
@@ -132,11 +159,23 @@ export async function decideResourceDownload({
   filePath,
   requestUrl,
   publicBaseUrl,
+  budgetMode,
   repository,
 }: DownloadDecisionInput): Promise<DownloadSuccess | DownloadFailure> {
+  const mode = parseDownloadBudgetMode(budgetMode);
+
+  if (mode === "closed") {
+    return downloadFailure(
+      "download_budget_limited",
+      "下载暂时关闭，避免产生异常成本",
+      503,
+    );
+  }
+
   const ownedFile = await getOwnedResourceFile({
     resourceId,
     filePath,
+    budgetMode: "open",
     repository,
   });
 
@@ -145,6 +184,11 @@ export async function decideResourceDownload({
   }
 
   const trimmedPublicBaseUrl = publicBaseUrl?.trim();
+
+  if (mode === "decision-only" && !trimmedPublicBaseUrl) {
+    return gatewayDisabledFailure();
+  }
+
   const url = trimmedPublicBaseUrl
     ? buildPublicDownloadUrl(trimmedPublicBaseUrl, ownedFile.file.path)
     : buildGatewayDownloadUrl(requestUrl, resourceId, ownedFile.file.path);

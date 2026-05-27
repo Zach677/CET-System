@@ -4,7 +4,8 @@
   "compatibility_date": "2026-03-17",
   "main": "./workers/app.ts",
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "head_sampling_rate": 0.1
   },
   "compatibility_flags": ["nodejs_compat"],
   "r2_buckets": [
@@ -13,8 +14,21 @@
       "bucket_name": "cet-exam-system-assets"
     }
   ],
+  "ratelimits": [
+    {
+      "name": "DOWNLOAD_RATE_LIMITER",
+      "namespace_id": "2026052701",
+      "simple": {
+        "limit": 20,
+        "period": 60
+      }
+    }
+  ],
   "vars": {
     "PUBLIC_APP_NAME": "CET 备考工作台",
-    "R2_PUBLIC_BASE_URL": ""
+    "R2_PUBLIC_BASE_URL": "",
+    "DOWNLOAD_BUDGET_MODE": "open",
+    "DOWNLOAD_RATE_LIMIT_ENABLED": "true",
+    "DOWNLOAD_RATE_LIMIT_RETRY_AFTER_SECONDS": "60"
   }
 }

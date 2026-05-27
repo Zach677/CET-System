@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   decideResourceDownload,
   getOwnedResourceFile,
+  parseDownloadBudgetMode,
 } from "~/server/download-service.server";
 import { createJsonResourceRepository } from "~/server/resource-repository.server";
 
@@ -49,6 +50,14 @@ const fixtureResources = [
 const repository = createJsonResourceRepository(fixtureResources);
 
 describe("download service", () => {
+  it("normalizes budget mode values", () => {
+    expect(parseDownloadBudgetMode("decision-only")).toBe("decision-only");
+    expect(parseDownloadBudgetMode("closed")).toBe("closed");
+    expect(parseDownloadBudgetMode("open")).toBe("open");
+    expect(parseDownloadBudgetMode("unexpected")).toBe("open");
+    expect(parseDownloadBudgetMode(undefined)).toBe("open");
+  });
+
   it("returns a public-base download URL for owned files", async () => {
     const result = await decideResourceDownload({
       resourceId: "owned-paper",
@@ -87,6 +96,68 @@ describe("download service", () => {
     expect(result.ok ? result.payload.url : "").toBe(
       "https://cet.example/api/resources/owned-paper/file?path=papers%2Fowned-paper.pdf",
     );
+  });
+
+  it("allows decision-only mode only when a public base URL is configured", async () => {
+    await expect(
+      decideResourceDownload({
+        resourceId: "owned-paper",
+        filePath: "papers/owned-paper.pdf",
+        requestUrl: "https://cet.example/api/resources/owned-paper/download",
+        publicBaseUrl: "https://cdn.example/resources",
+        budgetMode: "decision-only",
+        repository,
+      }),
+    ).resolves.toMatchObject({
+      ok: true,
+      payload: {
+        url: "https://cdn.example/resources/papers/owned-paper.pdf",
+      },
+    });
+
+    await expect(
+      decideResourceDownload({
+        resourceId: "owned-paper",
+        filePath: "papers/owned-paper.pdf",
+        requestUrl: "https://cet.example/api/resources/owned-paper/download",
+        publicBaseUrl: "",
+        budgetMode: "decision-only",
+        repository,
+      }),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 503,
+      error: {
+        code: "download_budget_limited",
+      },
+    });
+  });
+
+  it("closes download decisions before repository lookup in closed mode", async () => {
+    const throwingRepository = {
+      list: async () => {
+        throw new Error("repository should not be read");
+      },
+      findById: async () => {
+        throw new Error("repository should not be read");
+      },
+    };
+
+    await expect(
+      decideResourceDownload({
+        resourceId: "owned-paper",
+        filePath: "papers/owned-paper.pdf",
+        requestUrl: "https://cet.example/api/resources/owned-paper/download",
+        budgetMode: "closed",
+        repository: throwingRepository,
+      }),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 503,
+      error: {
+        code: "download_budget_limited",
+      },
+    });
   });
 
   it("clears the request query when building a gateway URL", async () => {
@@ -169,6 +240,23 @@ describe("download service", () => {
       file: {
         label: "试卷 PDF",
         path: "papers/owned-paper.pdf",
+      },
+    });
+  });
+
+  it("blocks gateway file access outside open budget mode", async () => {
+    await expect(
+      getOwnedResourceFile({
+        resourceId: "owned-paper",
+        filePath: "papers/owned-paper.pdf",
+        budgetMode: "decision-only",
+        repository,
+      }),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 503,
+      error: {
+        code: "download_budget_limited",
       },
     });
   });

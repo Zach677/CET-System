@@ -6,6 +6,8 @@
     "content:build": "tsx scripts/build-content-index.ts",
     "build": "react-router build",
     "cf-typegen": "wrangler types",
+    "cloudflare:bootstrap": "node scripts/cloudflare-bootstrap.mjs",
+    "check": "npm run build && wrangler deploy --dry-run",
     "dev": "react-router dev",
     "deploy": "npm run build && wrangler deploy",
     "prebuild": "npm run content:build",

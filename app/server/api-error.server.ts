@@ -2,6 +2,8 @@ export type ApiErrorCode =
   | "resource_not_found"
   | "file_not_found"
   | "download_not_supported"
+  | "download_rate_limited"
+  | "download_budget_limited"
   | "invalid_request"
   | "storage_object_missing";
 
