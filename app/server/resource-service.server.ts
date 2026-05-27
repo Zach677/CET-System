@@ -59,7 +59,7 @@ function toResourceFileView(file: ResourceFile): ResourceFileView {
     kindLabel: fileKindLabel[file.kind],
     path: file.path,
     cacheable: file.cacheable,
-    cacheLabel: file.cacheable ? "可手动缓存" : "需在线访问",
+    cacheLabel: file.cacheable ? "可手动缓存" : "仅在线播放",
   };
 }
 

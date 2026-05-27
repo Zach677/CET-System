@@ -112,6 +112,11 @@ describe("resource service", () => {
       kindLabel: "PDF",
       cacheLabel: "可手动缓存",
     });
+    expect(detail?.files[1]).toMatchObject({
+      label: "听力音频",
+      kindLabel: "Audio",
+      cacheLabel: "仅在线播放",
+    });
     expect(detail?.related.map((item) => item.id)).toEqual([
       "cet4-listening-guide",
     ]);
