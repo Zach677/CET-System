@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form } from "react-router";
+import { Form, Link } from "react-router";
 import { Field } from "@base-ui/react/field";
 import { Input } from "@base-ui/react/input";
 
@@ -93,6 +93,11 @@ export default function ResourceList({ loaderData }: Route.ComponentProps) {
           <div className="empty-state">
             <h3>没有匹配资源</h3>
             <p>换一个关键词，或回到当前分类先扫完整列表。</p>
+            {loaderData.q ? (
+              <Link className="button" to={`/${loaderData.level}/${loaderData.type}`}>
+                清除搜索
+              </Link>
+            ) : null}
           </div>
         )}
       </section>

@@ -188,12 +188,14 @@ input:focus-visible {
 .brand-nav a,
 .section-tabs a {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   min-height: 34px;
   padding: 0 10px;
   border-radius: var(--radius-md);
   color: var(--muted);
   font-size: 0.94rem;
+  white-space: nowrap;
 }
 
 .brand-nav a:hover,
@@ -615,6 +617,10 @@ input:focus-visible {
   color: var(--muted);
 }
 
+.empty-state .button {
+  justify-self: center;
+}
+
 .detail-card__header,
 .detail-card__title-block,
 .detail-meta-grid,
@@ -822,11 +828,24 @@ input:focus-visible {
     font-size: 1.62rem;
   }
 
+  .brand-nav a,
+  .section-tabs a,
+  .theme-toggle button,
+  .button,
+  .favorite-button {
+    min-height: 44px;
+  }
+
   .search-row,
   .resource-card__title-row,
   .resource-card__footer {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .search-row .button {
+    width: 100%;
+    justify-self: stretch;
   }
 
   .resource-card--list {
