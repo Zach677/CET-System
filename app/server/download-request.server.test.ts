@@ -15,26 +15,46 @@ describe("download request body", () => {
     });
   });
 
-  it("keeps file path as a compatibility fallback", async () => {
+  it("trims file ids", async () => {
     const request = new Request("https://cet.example/download", {
       method: "POST",
-      body: JSON.stringify({ filePath: "papers/owned-paper.pdf" }),
+      body: JSON.stringify({ fileId: "  paper-pdf  " }),
     });
 
     await expect(readDownloadRequestBody(request)).resolves.toEqual({
       ok: true,
-      fileId: undefined,
-      filePath: "papers/owned-paper.pdf",
+      fileId: "paper-pdf",
     });
   });
 
-  it("allows an empty body so the service can return file_not_found", async () => {
+  it("rejects missing file ids", async () => {
     const request = new Request("https://cet.example/download", {
       method: "POST",
     });
 
-    await expect(readDownloadRequestBody(request)).resolves.toEqual({
-      ok: true,
+    await expect(readDownloadRequestBody(request)).resolves.toMatchObject({
+      ok: false,
+      status: 400,
+      error: {
+        code: "invalid_request",
+        message: "文件 ID 缺失",
+      },
+    });
+
+    await expect(
+      readDownloadRequestBody(
+        new Request("https://cet.example/download", {
+          method: "POST",
+          body: JSON.stringify({}),
+        }),
+      ),
+    ).resolves.toMatchObject({
+      ok: false,
+      status: 400,
+      error: {
+        code: "invalid_request",
+        message: "文件 ID 缺失",
+      },
     });
   });
 
@@ -44,21 +64,6 @@ describe("download request body", () => {
         new Request("https://cet.example/download", {
           method: "POST",
           body: "{",
-        }),
-      ),
-    ).resolves.toMatchObject({
-      ok: false,
-      status: 400,
-      error: {
-        code: "invalid_request",
-      },
-    });
-
-    await expect(
-      readDownloadRequestBody(
-        new Request("https://cet.example/download", {
-          method: "POST",
-          body: JSON.stringify({ filePath: 123 }),
         }),
       ),
     ).resolves.toMatchObject({
@@ -88,7 +93,7 @@ describe("download request body", () => {
   it("rejects bodies beyond the configured byte limit", async () => {
     const request = new Request("https://cet.example/download", {
       method: "POST",
-      body: JSON.stringify({ filePath: "papers/owned-paper.pdf" }),
+      body: JSON.stringify({ fileId: "paper-pdf" }),
     });
 
     await expect(readDownloadRequestBody(request, 8)).resolves.toEqual({

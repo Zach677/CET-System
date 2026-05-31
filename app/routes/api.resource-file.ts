@@ -11,12 +11,10 @@ import type { Route } from "./+types/api.resource-file";
 export async function loader({ request, params, context }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const fileId = url.searchParams.get("fileId");
-  const path = url.searchParams.get("path");
   const env = context.cloudflare.env;
   const result = await getOwnedResourceFile({
     resourceId: params.resourceId,
     fileId,
-    filePath: path,
     budgetMode: env.DOWNLOAD_BUDGET_MODE,
   });
 

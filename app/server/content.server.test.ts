@@ -29,13 +29,13 @@ describe("content server", () => {
   it("exports download service decisions", async () => {
     const owned = await decideResourceDownload({
       resourceId: "cet4-paper-2024-12-a",
-      filePath: "papers/cet4-paper-2024-12-a.pdf",
+      fileId: "paper-pdf",
       requestUrl:
         "https://cet.example/api/resources/cet4-paper-2024-12-a/download",
     });
     const restricted = await decideResourceDownload({
       resourceId: "cet4-listening-welearn",
-      filePath: "anything.pdf",
+      fileId: "paper-pdf",
       requestUrl:
         "https://cet.example/api/resources/cet4-listening-welearn/download",
     });

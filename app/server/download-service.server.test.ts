@@ -62,7 +62,7 @@ describe("download service", () => {
   it("returns a public-base download URL for owned files", async () => {
     const result = await decideResourceDownload({
       resourceId: "owned-paper",
-      filePath: "papers/owned-paper.pdf",
+      fileId: "paper-pdf",
       requestUrl: "https://cet.example/api/resources/owned-paper/download",
       publicBaseUrl: "https://cdn.example/resources///",
       repository,
@@ -87,7 +87,7 @@ describe("download service", () => {
   it("returns a gateway URL when no public base is configured", async () => {
     const result = await decideResourceDownload({
       resourceId: "owned-paper",
-      filePath: "papers/owned-paper.pdf",
+      fileId: "paper-pdf",
       requestUrl: "https://cet.example/api/resources/owned-paper/download",
       publicBaseUrl: "",
       repository,
@@ -103,7 +103,7 @@ describe("download service", () => {
     await expect(
       decideResourceDownload({
         resourceId: "owned-paper",
-        filePath: "papers/owned-paper.pdf",
+        fileId: "paper-pdf",
         requestUrl: "https://cet.example/api/resources/owned-paper/download",
         publicBaseUrl: "https://cdn.example/resources",
         budgetMode: "decision-only",
@@ -119,7 +119,7 @@ describe("download service", () => {
     await expect(
       decideResourceDownload({
         resourceId: "owned-paper",
-        filePath: "papers/owned-paper.pdf",
+        fileId: "paper-pdf",
         requestUrl: "https://cet.example/api/resources/owned-paper/download",
         publicBaseUrl: "",
         budgetMode: "decision-only",
@@ -147,7 +147,7 @@ describe("download service", () => {
     await expect(
       decideResourceDownload({
         resourceId: "owned-paper",
-        filePath: "papers/owned-paper.pdf",
+        fileId: "paper-pdf",
         requestUrl: "https://cet.example/api/resources/owned-paper/download",
         budgetMode: "closed",
         repository: throwingRepository,
@@ -166,7 +166,7 @@ describe("download service", () => {
       resourceId: "owned-paper",
       fileId: "paper-pdf",
       requestUrl:
-        "https://cet.example/api/resources/owned-paper/download?token=stale&path=wrong.pdf",
+        "https://cet.example/api/resources/owned-paper/download?token=stale&fileId=wrong",
       repository,
     });
 
@@ -176,30 +176,11 @@ describe("download service", () => {
     );
   });
 
-  it("keeps path lookup as a compatibility fallback", async () => {
-    const result = await decideResourceDownload({
-      resourceId: "owned-paper",
-      filePath: "papers/owned-paper.pdf",
-      requestUrl: "https://cet.example/api/resources/owned-paper/download",
-      repository,
-    });
-
-    expect(result).toMatchObject({
-      ok: true,
-      payload: {
-        file: {
-          id: "paper-pdf",
-        },
-      },
-    });
-    expect(result.ok ? result.payload.file : {}).not.toHaveProperty("path");
-  });
-
   it("denies missing resources and missing files", async () => {
     await expect(
       decideResourceDownload({
         resourceId: "missing",
-        filePath: "papers/owned-paper.pdf",
+        fileId: "paper-pdf",
         requestUrl: "https://cet.example/api/resources/missing/download",
         repository,
       }),
@@ -215,7 +196,7 @@ describe("download service", () => {
     await expect(
       decideResourceDownload({
         resourceId: "owned-paper",
-        filePath: "missing.pdf",
+        fileId: "missing-file",
         requestUrl: "https://cet.example/api/resources/owned-paper/download",
         repository,
       }),
@@ -232,7 +213,7 @@ describe("download service", () => {
   it("denies restricted resources before any storage lookup", async () => {
     const result = await decideResourceDownload({
       resourceId: "restricted-guide",
-      filePath: "anything.pdf",
+      fileId: "paper-pdf",
       requestUrl: "https://cet.example/api/resources/restricted-guide/download",
       repository,
     });
@@ -250,7 +231,7 @@ describe("download service", () => {
   it("validates gateway file access with the same owned-resource policy", async () => {
     const result = await getOwnedResourceFile({
       resourceId: "owned-paper",
-      filePath: "papers/owned-paper.pdf",
+      fileId: "paper-pdf",
       repository,
     });
 
@@ -269,7 +250,7 @@ describe("download service", () => {
     await expect(
       getOwnedResourceFile({
         resourceId: "owned-paper",
-        filePath: "papers/owned-paper.pdf",
+        fileId: "paper-pdf",
         budgetMode: "decision-only",
         repository,
       }),
@@ -286,7 +267,7 @@ describe("download service", () => {
     await expect(
       getOwnedResourceFile({
         resourceId: "missing",
-        filePath: "papers/owned-paper.pdf",
+        fileId: "paper-pdf",
         repository,
       }),
     ).resolves.toMatchObject({
@@ -301,7 +282,7 @@ describe("download service", () => {
     await expect(
       getOwnedResourceFile({
         resourceId: "owned-paper",
-        filePath: "missing.pdf",
+        fileId: "missing-file",
         repository,
       }),
     ).resolves.toMatchObject({
@@ -316,7 +297,7 @@ describe("download service", () => {
     await expect(
       getOwnedResourceFile({
         resourceId: "owned-paper",
-        filePath: null,
+        fileId: null,
         repository,
       }),
     ).resolves.toMatchObject({
@@ -345,7 +326,7 @@ describe("download service", () => {
     await expect(
       getOwnedResourceFile({
         resourceId: "restricted-guide",
-        filePath: "anything.pdf",
+        fileId: "paper-pdf",
         repository,
       }),
     ).resolves.toMatchObject({

@@ -76,8 +76,8 @@ Production notes from comparable Cloudflare projects:
 
 1. `/api/resources/:id/download` reads a bounded JSON body, validates the owned
    file by stable file id, applies budget mode, applies the Cloudflare limiter,
-   then returns a URL. `filePath` remains a compatibility fallback, but clients
-   should not treat object keys as the public protocol.
+   then returns a URL. Clients should not treat object keys as the public
+   protocol.
 2. `/api/resources/:id/file` validates the owned file, applies gateway budget
    mode, applies the Cloudflare limiter, then reads the server-owned storage key
    from R2.
@@ -96,5 +96,5 @@ npm run check
 Deployment still needs one real-environment smoke with an actual R2 object:
 
 ```bash
-curl -I "https://<deployment>/api/resources/cet4-paper-2024-12-a/file?path=papers%2Fcet4-paper-2024-12-a.pdf"
+curl -I "https://<deployment>/api/resources/cet4-paper-2024-12-a/file?fileId=paper-pdf"
 ```
