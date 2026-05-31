@@ -6,6 +6,7 @@ import { Input } from "@base-ui/react/input";
 import { ResourceCard } from "~/components/resource-card";
 import { SiteShell } from "~/components/site-shell";
 import { Button } from "~/components/ui/button";
+import { normalizeResourceQuery } from "~/lib/resource-query";
 import { examLevelSchema, typeFromSlug, typeLabel } from "~/lib/resources";
 import { listResourceSummaries } from "~/server/resource-service.server";
 
@@ -15,7 +16,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   const level = examLevelSchema.parse(params.level);
   const type = typeFromSlug(params.type);
   const url = new URL(request.url);
-  const q = url.searchParams.get("q") ?? "";
+  const q = normalizeResourceQuery(url.searchParams.get("q")) ?? "";
 
   const items = await listResourceSummaries({
     level,

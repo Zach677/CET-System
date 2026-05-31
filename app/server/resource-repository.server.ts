@@ -1,6 +1,7 @@
 import cet4ResourcesJson from "../../content/cet4/resources.json";
 import cet6ResourcesJson from "../../content/cet6/resources.json";
 
+import { normalizeResourceQuery } from "~/lib/resource-query";
 import {
   resourceCollectionSchema,
   type ExamLevel,
@@ -43,7 +44,9 @@ export function createJsonResourceRepository(
 
   return {
     async list(filters: ResourceFilters = {}) {
-      const normalizedQuery = filters.query?.trim().toLowerCase();
+      const normalizedQuery = normalizeResourceQuery(
+        filters.query,
+      )?.toLowerCase();
 
       return resources
         .filter((resource) => {

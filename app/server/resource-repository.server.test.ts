@@ -150,6 +150,16 @@ describe("json resource repository", () => {
     expect(items.map((item) => item.id)).toEqual(["cet4-listening-guide"]);
   });
 
+  it("normalizes search query input before filtering", async () => {
+    const repository = createJsonResourceRepository(fixtureResources);
+
+    const items = await repository.list({
+      query: "  平台资源  ",
+    });
+
+    expect(items.map((item) => item.id)).toEqual(["cet4-listening-guide"]);
+  });
+
   it("returns cloned resources that cannot mutate cached records", async () => {
     const repository = createJsonResourceRepository(fixtureResources);
 

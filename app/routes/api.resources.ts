@@ -1,3 +1,4 @@
+import { normalizeResourceQuery } from "~/lib/resource-query";
 import { examLevelSchema, resourceTypeSchema } from "~/lib/resources";
 import { listResourceSummaries } from "~/server/resource-service.server";
 
@@ -9,7 +10,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const typeResult = resourceTypeSchema.safeParse(url.searchParams.get("type"));
   const level = levelResult.success ? levelResult.data : undefined;
   const type = typeResult.success ? typeResult.data : undefined;
-  const q = url.searchParams.get("q") ?? undefined;
+  const q = normalizeResourceQuery(url.searchParams.get("q"));
 
   const items = await listResourceSummaries({
     level,
