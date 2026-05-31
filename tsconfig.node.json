@@ -1,6 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["vite.config.ts", "scripts/**/*.ts"],
+  "include": [
+    "vite.config.ts",
+    "scripts/**/*.ts",
+    "app/lib/web-app-manifest.ts"
+  ],
   "compilerOptions": {
     "composite": true,
     "strict": true,

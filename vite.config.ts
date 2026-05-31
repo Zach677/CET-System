@@ -7,6 +7,8 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+import { webAppManifest } from "./app/lib/web-app-manifest";
+
 export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
@@ -24,26 +26,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico"],
       manifest: {
-        name: "CET 备考工作台",
-        short_name: "CET 工作台",
-        description: "给四六级备考用的极简工作台。",
-        theme_color: "#f5f5f2",
-        background_color: "#f5f5f2",
-        display: "standalone",
-        start_url: "/",
-        icons: [
-          {
-            src: "/icon.svg",
-            sizes: "any",
-            type: "image/svg+xml",
-          },
-          {
-            src: "/icon-maskable.svg",
-            sizes: "any",
-            type: "image/svg+xml",
-            purpose: "maskable",
-          },
-        ],
+        ...webAppManifest,
+        icons: webAppManifest.icons.map((icon) => ({ ...icon })),
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,ico,json}"],
