@@ -50,10 +50,10 @@ export type ResourceFactView = {
 };
 
 export type ResourceFileView = {
+  id: string;
   label: string;
   kind: ResourceFileKind;
   kindLabel: string;
-  path: string;
   cacheable: boolean;
   cacheLabel: string;
 };

@@ -25,12 +25,14 @@ const fixtureResources = [
     tags: ["真题", "听力"],
     files: [
       {
+        id: "paper-pdf",
         label: "试卷 PDF",
         kind: "pdf",
         path: "papers/cet4-paper-2025.pdf",
         cacheable: true,
       },
       {
+        id: "listening-audio",
         label: "听力音频",
         kind: "audio",
         path: "audio/cet4-paper-2025.mp3",
@@ -108,6 +110,7 @@ describe("resource service", () => {
       { label: "授权", value: "可控授权" },
     ]);
     expect(detail?.files[0]).toMatchObject({
+      id: "paper-pdf",
       label: "试卷 PDF",
       kindLabel: "PDF",
       cacheLabel: "可手动缓存",

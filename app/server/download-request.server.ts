@@ -4,6 +4,7 @@ export const MAX_DOWNLOAD_REQUEST_BODY_BYTES = 1024;
 
 type DownloadRequestBodySuccess = {
   ok: true;
+  fileId?: string | null;
   filePath?: string | null;
 };
 
@@ -116,7 +117,13 @@ export async function readDownloadRequestBody(
     return invalidRequest("请求体格式无效");
   }
 
-  const filePath = (parsed as { filePath?: unknown }).filePath;
+  const payload = parsed as { fileId?: unknown; filePath?: unknown };
+  const fileId = payload.fileId;
+  const filePath = payload.filePath;
+
+  if (fileId !== undefined && fileId !== null && typeof fileId !== "string") {
+    return invalidRequest("文件 ID 格式无效");
+  }
 
   if (
     filePath !== undefined &&
@@ -128,6 +135,7 @@ export async function readDownloadRequestBody(
 
   return {
     ok: true,
+    fileId,
     filePath,
   };
 }

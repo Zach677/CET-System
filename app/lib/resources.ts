@@ -14,6 +14,7 @@ export const downloadPolicySchema = z.enum(["signed", "external", "none"]);
 export const resourceFileKindSchema = z.enum(["pdf", "audio", "zip", "image"]);
 
 export const resourceFileSchema = z.object({
+  id: z.string().min(1),
   label: z.string(),
   kind: resourceFileKindSchema,
   path: z.string(),

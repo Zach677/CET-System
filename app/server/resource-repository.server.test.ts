@@ -18,6 +18,7 @@ const fixtureResources = [
     tags: ["真题", "阅读"],
     files: [
       {
+        id: "paper-pdf",
         label: "试卷 PDF",
         kind: "pdf",
         path: "papers/cet4-paper-old.pdf",
@@ -155,6 +156,7 @@ describe("json resource repository", () => {
     const [listItem] = await repository.list({ level: "cet4", type: "papers" });
     listItem.tags.push("mutated-list-tag");
     listItem.files.push({
+      id: "mutated-list-pdf",
       label: "Mutated List File",
       kind: "pdf",
       path: "mutated-list.pdf",
@@ -177,6 +179,7 @@ describe("json resource repository", () => {
       tags: ["真题", "阅读"],
       files: [
         {
+          id: "paper-pdf",
           label: "试卷 PDF",
         },
       ],

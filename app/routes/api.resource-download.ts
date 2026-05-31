@@ -20,6 +20,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
 
   const decision = await decideResourceDownload({
     resourceId: params.resourceId,
+    fileId: body.fileId,
     filePath: body.filePath,
     requestUrl: request.url,
     publicBaseUrl: env.R2_PUBLIC_BASE_URL,

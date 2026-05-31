@@ -54,10 +54,10 @@ function toResourceSummaryView(
 
 function toResourceFileView(file: ResourceFile): ResourceFileView {
   return {
+    id: file.id,
     label: file.label,
     kind: file.kind,
     kindLabel: fileKindLabel[file.kind],
-    path: file.path,
     cacheable: file.cacheable,
     cacheLabel: file.cacheable ? "可手动缓存" : "仅在线播放",
   };

@@ -62,7 +62,7 @@ export default function ResourceDetail({ loaderData }: Route.ComponentProps) {
             <div className="section-kicker">文件清单</div>
             <ul className="file-list">
               {detail.files.map((file) => (
-                <li key={file.path}>
+                <li key={file.id}>
                   <div>
                     <strong>{file.label}</strong>
                     <span>{file.kindLabel}</span>

@@ -53,7 +53,7 @@ export function DownloadPanel({
   const ownedDownload = download;
 
   async function handleDownload(
-    filePath: string,
+    fileId: string,
     fileLabel: string,
     cacheable: boolean,
   ) {
@@ -66,7 +66,7 @@ export function DownloadPanel({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ filePath }),
+        body: JSON.stringify({ fileId }),
       },
     );
 
@@ -116,9 +116,9 @@ export function DownloadPanel({
       <div className="action-stack">
         {ownedDownload.files.map((file) => (
           <Button
-            key={file.path}
+            key={file.id}
             variant="primary"
-            onClick={() => handleDownload(file.path, file.label, file.cacheable)}
+            onClick={() => handleDownload(file.id, file.label, file.cacheable)}
             disabled={state.kind === "loading"}
             focusableWhenDisabled
           >

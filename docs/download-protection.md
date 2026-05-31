@@ -75,9 +75,12 @@ Production notes from comparable Cloudflare projects:
 ## Request Path
 
 1. `/api/resources/:id/download` reads a bounded JSON body, validates the owned
-   file, applies budget mode, applies the Cloudflare limiter, then returns a URL.
+   file by stable file id, applies budget mode, applies the Cloudflare limiter,
+   then returns a URL. `filePath` remains a compatibility fallback, but clients
+   should not treat object keys as the public protocol.
 2. `/api/resources/:id/file` validates the owned file, applies gateway budget
-   mode, applies the Cloudflare limiter, then reads from R2.
+   mode, applies the Cloudflare limiter, then reads the server-owned storage key
+   from R2.
 3. Invalid, restricted, oversized, over-limit, and closed-budget requests return
    normalized JSON errors with `cache-control: no-store`.
 

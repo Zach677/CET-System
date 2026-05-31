@@ -6,9 +6,13 @@ import {
 } from "~/server/resource-repository.server";
 
 export type DownloadFilePayload = {
+  id: string;
   label: string;
-  path: string;
   cacheable: boolean;
+};
+
+type OwnedDownloadFilePayload = DownloadFilePayload & {
+  path: string;
 };
 
 export type DownloadSuccess = {
@@ -36,11 +40,12 @@ export type DownloadFailure = {
 export type OwnedResourceFileSuccess = {
   ok: true;
   resourceId: string;
-  file: DownloadFilePayload;
+  file: OwnedDownloadFilePayload;
 };
 
 type DownloadDecisionInput = {
   resourceId: string;
+  fileId?: string | null;
   filePath?: string | null;
   requestUrl: string;
   publicBaseUrl?: string;
@@ -50,6 +55,7 @@ type DownloadDecisionInput = {
 
 type OwnedResourceFileInput = {
   resourceId: string;
+  fileId?: string | null;
   filePath?: string | null;
   budgetMode?: DownloadBudgetMode | string | null;
   repository?: ResourceRepository;
@@ -92,8 +98,9 @@ function gatewayDisabledFailure(): DownloadFailure {
   );
 }
 
-function toDownloadFilePayload(file: ResourceFile): DownloadFilePayload {
+function toOwnedDownloadFilePayload(file: ResourceFile): OwnedDownloadFilePayload {
   return {
+    id: file.id,
     label: file.label,
     path: file.path,
     cacheable: file.cacheable,
@@ -107,18 +114,19 @@ function buildPublicDownloadUrl(publicBaseUrl: string, filePath: string): string
 function buildGatewayDownloadUrl(
   requestUrl: string,
   resourceId: string,
-  filePath: string,
+  fileId: string,
 ): string {
   const url = new URL(requestUrl);
   url.pathname = `/api/resources/${resourceId}/file`;
   url.search = "";
-  url.searchParams.set("path", filePath);
+  url.searchParams.set("fileId", fileId);
 
   return url.toString();
 }
 
 export async function getOwnedResourceFile({
   resourceId,
+  fileId,
   filePath,
   budgetMode,
   repository,
@@ -141,7 +149,9 @@ export async function getOwnedResourceFile({
     );
   }
 
-  const file = resource.files.find((candidate) => candidate.path === filePath);
+  const file = resource.files.find((candidate) =>
+    fileId ? candidate.id === fileId : candidate.path === filePath,
+  );
 
   if (!file) {
     return downloadFailure("file_not_found", "文件不存在", 404);
@@ -150,12 +160,13 @@ export async function getOwnedResourceFile({
   return {
     ok: true,
     resourceId,
-    file: toDownloadFilePayload(file),
+    file: toOwnedDownloadFilePayload(file),
   };
 }
 
 export async function decideResourceDownload({
   resourceId,
+  fileId,
   filePath,
   requestUrl,
   publicBaseUrl,
@@ -174,6 +185,7 @@ export async function decideResourceDownload({
 
   const ownedFile = await getOwnedResourceFile({
     resourceId,
+    fileId,
     filePath,
     budgetMode: "open",
     repository,
@@ -191,7 +203,7 @@ export async function decideResourceDownload({
 
   const url = trimmedPublicBaseUrl
     ? buildPublicDownloadUrl(trimmedPublicBaseUrl, ownedFile.file.path)
-    : buildGatewayDownloadUrl(requestUrl, resourceId, ownedFile.file.path);
+    : buildGatewayDownloadUrl(requestUrl, resourceId, ownedFile.file.id);
 
   return {
     ok: true,
@@ -200,7 +212,11 @@ export async function decideResourceDownload({
       kind: "signed",
       reasonCode: "owned_file_available",
       url,
-      file: ownedFile.file,
+      file: {
+        id: ownedFile.file.id,
+        label: ownedFile.file.label,
+        cacheable: ownedFile.file.cacheable,
+      },
     },
   };
 }

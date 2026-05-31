@@ -23,6 +23,7 @@ const fixtureResources = [
     tags: ["真题"],
     files: [
       {
+        id: "paper-pdf",
         label: "试卷 PDF",
         kind: "pdf",
         path: "papers/owned-paper.pdf",
@@ -75,8 +76,8 @@ describe("download service", () => {
         reasonCode: "owned_file_available",
         url: "https://cdn.example/resources/papers/owned-paper.pdf",
         file: {
+          id: "paper-pdf",
           label: "试卷 PDF",
-          path: "papers/owned-paper.pdf",
           cacheable: true,
         },
       },
@@ -94,7 +95,7 @@ describe("download service", () => {
 
     expect(result.ok).toBe(true);
     expect(result.ok ? result.payload.url : "").toBe(
-      "https://cet.example/api/resources/owned-paper/file?path=papers%2Fowned-paper.pdf",
+      "https://cet.example/api/resources/owned-paper/file?fileId=paper-pdf",
     );
   });
 
@@ -163,7 +164,7 @@ describe("download service", () => {
   it("clears the request query when building a gateway URL", async () => {
     const result = await decideResourceDownload({
       resourceId: "owned-paper",
-      filePath: "papers/owned-paper.pdf",
+      fileId: "paper-pdf",
       requestUrl:
         "https://cet.example/api/resources/owned-paper/download?token=stale&path=wrong.pdf",
       repository,
@@ -171,8 +172,27 @@ describe("download service", () => {
 
     expect(result.ok).toBe(true);
     expect(result.ok ? result.payload.url : "").toBe(
-      "https://cet.example/api/resources/owned-paper/file?path=papers%2Fowned-paper.pdf",
+      "https://cet.example/api/resources/owned-paper/file?fileId=paper-pdf",
     );
+  });
+
+  it("keeps path lookup as a compatibility fallback", async () => {
+    const result = await decideResourceDownload({
+      resourceId: "owned-paper",
+      filePath: "papers/owned-paper.pdf",
+      requestUrl: "https://cet.example/api/resources/owned-paper/download",
+      repository,
+    });
+
+    expect(result).toMatchObject({
+      ok: true,
+      payload: {
+        file: {
+          id: "paper-pdf",
+        },
+      },
+    });
+    expect(result.ok ? result.payload.file : {}).not.toHaveProperty("path");
   });
 
   it("denies missing resources and missing files", async () => {
@@ -238,6 +258,7 @@ describe("download service", () => {
       ok: true,
       resourceId: "owned-paper",
       file: {
+        id: "paper-pdf",
         label: "试卷 PDF",
         path: "papers/owned-paper.pdf",
       },

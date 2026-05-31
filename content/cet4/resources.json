@@ -14,12 +14,14 @@
     "tags": ["真题", "听力", "近年"],
     "files": [
       {
+        "id": "paper-pdf",
         "label": "试卷 PDF",
         "kind": "pdf",
         "path": "papers/cet4-paper-2024-12-a.pdf",
         "cacheable": true
       },
       {
+        "id": "listening-audio",
         "label": "听力音频",
         "kind": "audio",
         "path": "audio/cet4-paper-2024-12-a.mp3",
@@ -42,6 +44,7 @@
     "tags": ["模拟", "冲刺"],
     "files": [
       {
+        "id": "mock-pdf",
         "label": "模拟卷 PDF",
         "kind": "pdf",
         "path": "mocks/cet4-mock-sprint-01.pdf",
@@ -79,6 +82,7 @@
     "tags": ["专项", "阅读"],
     "files": [
       {
+        "id": "practice-pdf",
         "label": "专项练习 PDF",
         "kind": "pdf",
         "path": "skills/cet4-reading-cloze-kit.pdf",
