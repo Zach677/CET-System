@@ -174,3 +174,22 @@ npm run deploy
 The Worker is the production application runtime and download policy boundary.
 Keep secrets in Wrangler secrets or CI secrets, never in `wrangler.jsonc`,
 source files, docs, commits, or logs.
+
+### GitHub Actions Deployment
+
+After the first manual Cloudflare bootstrap, production deploys are handled by
+`.github/workflows/deploy.yml`.
+
+The workflow runs on pull requests, pushes to `main`, and manual dispatches. Pull
+requests run the verification gates only. Pushes to `main` run typecheck, tests,
+build, a Wrangler dry-run, and then deploy the Worker.
+
+Required GitHub Actions secrets:
+
+```bash
+gh secret set CLOUDFLARE_ACCOUNT_ID --body "<account-id>"
+gh secret set CLOUDFLARE_API_TOKEN --body "<api-token>"
+```
+
+Use a Cloudflare API token scoped to the target account and Worker deployment.
+Do not store the token in repository files or local docs.
