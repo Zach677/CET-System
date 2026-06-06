@@ -32,7 +32,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.13.5",
+    "@cloudflare/vite-plugin": "^1.39.2",
     "@react-router/dev": "7.15.0",
     "@tailwindcss/vite": "^4.2.2",
     "@testing-library/jest-dom": "^6.9.1",
@@ -49,6 +49,6 @@
     "vite-plugin-pwa": "^1.2.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4",
-    "wrangler": "^4.77.0"
+    "wrangler": "^4.97.0"
   }
 }
