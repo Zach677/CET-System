@@ -25,6 +25,11 @@ const stepStatusLabel: Record<ImportStepView["status"], string> = {
   planned: "后续接入",
 };
 
+const statusBadgeClass: Record<ImportLaneView["status"], string> = {
+  available: "badge badge--accent",
+  planned: "badge badge--muted",
+};
+
 function firstError(
   actionData: ImportDraftResult | undefined,
   field: string,
@@ -87,7 +92,7 @@ export default function ImportRoute({ loaderData }: Route.ComponentProps) {
                     <strong>{step.title}</strong>
                     <p>{step.description}</p>
                   </div>
-                  <span className="badge subtle">
+                  <span className={statusBadgeClass[step.status]}>
                     {stepStatusLabel[step.status]}
                   </span>
                 </li>
@@ -249,7 +254,7 @@ export default function ImportRoute({ loaderData }: Route.ComponentProps) {
                     <h3>{lane.title}</h3>
                     <p>{lane.description}</p>
                   </div>
-                  <span className="badge subtle">
+                  <span className={statusBadgeClass[lane.status]}>
                     {laneStatusLabel[lane.status]}
                   </span>
                 </article>
