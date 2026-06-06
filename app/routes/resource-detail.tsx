@@ -76,13 +76,6 @@ export default function ResourceDetail({ loaderData }: Route.ComponentProps) {
 
         <aside className="sidebar-stack">
           <DownloadPanel download={detail.download} />
-          <section className="glass-card">
-            <div className="section-kicker">返回</div>
-            <h3>继续刷同类</h3>
-            <Link className={buttonClassName()} to={`/${detail.level}/${detail.type}`}>
-              回到 {detail.typeLabel}
-            </Link>
-          </section>
         </aside>
       </section>
 

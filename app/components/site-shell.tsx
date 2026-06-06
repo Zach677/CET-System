@@ -18,12 +18,14 @@ export function SiteShell({
   children,
   level,
   eyebrow,
+  actions,
 }: {
   title: string;
-  description: string;
+  description?: string;
   children: React.ReactNode;
   level?: ExamLevel;
   eyebrow?: string;
+  actions?: React.ReactNode;
 }) {
   return (
     <div className="page-shell">
@@ -72,11 +74,14 @@ export function SiteShell({
         </aside>
 
         <main className="page-main" id="main-content">
-          <section className="page-heading">
-            {eyebrow ? <div className="section-kicker">{eyebrow}</div> : null}
-            <h1>{title}</h1>
-            <p>{description}</p>
-          </section>
+          <header className="page-topbar">
+            <div className="page-topbar__heading">
+              {eyebrow ? <span className="page-eyebrow">{eyebrow}</span> : null}
+              <h1>{title}</h1>
+            </div>
+            {actions ? <div className="page-topbar__actions">{actions}</div> : null}
+          </header>
+          {description ? <p className="page-lede">{description}</p> : null}
 
           {children}
         </main>

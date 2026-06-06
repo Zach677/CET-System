@@ -49,40 +49,37 @@ export default function ResourceList({ loaderData }: Route.ComponentProps) {
     setQuery(loaderData.q);
   }, [loaderData.q]);
 
+  const search = (
+    <Form className="toolbar-search" role="search">
+      <Field.Root name="q">
+        <Field.Label>搜标题、摘要或标签</Field.Label>
+        <div className="search-row">
+          <Input
+            id="q"
+            name="q"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+            placeholder={`搜 ${typeLabel[loaderData.type]}…`}
+            className="search-input"
+          />
+          <Button variant="primary" type="submit">
+            搜索
+          </Button>
+        </div>
+      </Field.Root>
+    </Form>
+  );
+
   return (
     <SiteShell
       title={typeLabel[loaderData.type]}
-      description="下载只放在详情页。这里先筛选、先判断来源，再决定要不要点进去。"
       eyebrow={loaderData.level.toUpperCase()}
       level={loaderData.level}
+      actions={search}
     >
       <section className="stack">
-        <Form className="glass-card search-panel" role="search">
-          <Field.Root name="q">
-            <Field.Label>搜标题、摘要或标签</Field.Label>
-            <div className="search-row">
-              <Input
-                id="q"
-                name="q"
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.currentTarget.value)}
-                placeholder={`搜 ${typeLabel[loaderData.type]}…`}
-                className="search-input"
-              />
-              <Button variant="primary" type="submit">
-                搜索
-              </Button>
-            </div>
-          </Field.Root>
-        </Form>
-
-        <div className="section-header">
-          <div>
-            <div className="section-kicker">列表</div>
-            <h2>{loaderData.items.length} 条结果</h2>
-          </div>
-        </div>
+        <p className="list-meta">{loaderData.items.length} 条结果</p>
 
         {loaderData.items.length > 0 ? (
           <div className="resource-list">

@@ -26,8 +26,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <SiteShell
       title="CET 备考工作台"
-      description="从四级或六级进入，按真题、模拟、专项、听力和资源整理材料。站内托管只放可控内容，受限来源只保留说明和跳转。"
-      eyebrow="CET 备考工作台"
+      description="四六级真题、模拟、专项、听力和备考资源。"
     >
       <section className="card-grid card-grid--two">
         {loaderData.levels.map((level) => (
@@ -68,13 +67,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </div>
           </section>
 
-          <section className="glass-card research-note">
-            <div className="section-kicker">资源边界</div>
-            <h2>不是所有“网上很多”的内容都能随便搬。</h2>
-            <p>
-              真题、模拟卷、听力材料在网上分布很广，但系统化题库和平台资源很多都更接近出版社或机构的专有产品。所以 v1 只把站内可控内容做好，平台型资源保留来源说明和跳转。
-            </p>
-          </section>
+          <p className="page-note">
+            <span>资源边界</span>
+            站内托管只放可控内容。真题、模拟卷、听力分布很广，但系统化题库多接近出版社或机构的专有产品，平台型资源只保留来源说明和跳转。
+          </p>
         </div>
 
         <aside className="sidebar-stack">

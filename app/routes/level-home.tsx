@@ -1,6 +1,5 @@
 import { Link } from "react-router";
 
-import { LocalSummary } from "~/components/local-summary";
 import { SiteShell } from "~/components/site-shell";
 import { buttonClassName } from "~/components/ui/button-styles";
 import { examLevelSchema } from "~/lib/resources";
@@ -27,36 +26,27 @@ export default function LevelHome({ loaderData }: Route.ComponentProps) {
   return (
     <SiteShell
       title={`${loaderData.label}资源概览`}
-      description="先看每个模块的资源量，再进入真正要学的分类。列表页负责筛选，详情页负责下载和记录。"
       eyebrow={loaderData.label}
       level={loaderData.level}
     >
-      <section className="content-layout">
-        <div className="stack">
-          <div className="card-grid card-grid--two">
-            {loaderData.buckets.map((bucket) => (
-              <article key={bucket.type} className="glass-card bucket-card">
-                <div className="section-kicker">{bucket.label}</div>
-                <h2>{bucket.count} 条</h2>
-                <p>
-                  {bucket.latest[0]?.summary ??
-                    "这一栏还没加满，但结构已经给你留好了。"}
-                </p>
-                <Link
-                  className={buttonClassName({ variant: "primary" })}
-                  to={`/${loaderData.level}/${bucket.type}`}
-                >
-                  看 {bucket.label}
-                </Link>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <aside className="sidebar-stack">
-          <LocalSummary />
-        </aside>
-      </section>
+      <div className="card-grid card-grid--two">
+        {loaderData.buckets.map((bucket) => (
+          <article key={bucket.type} className="glass-card bucket-card">
+            <div className="section-kicker">{bucket.label}</div>
+            <h2>{bucket.count} 条</h2>
+            <p>
+              {bucket.latest[0]?.summary ??
+                "这一栏还没加满，但结构已经给你留好了。"}
+            </p>
+            <Link
+              className={buttonClassName({ variant: "primary" })}
+              to={`/${loaderData.level}/${bucket.type}`}
+            >
+              看 {bucket.label}
+            </Link>
+          </article>
+        ))}
+      </div>
     </SiteShell>
   );
 }

@@ -78,7 +78,7 @@ export default function ImportRoute({ loaderData }: Route.ComponentProps) {
   return (
     <SiteShell
       title="导入资源"
-      description="先把外部合法来源收敛成可审核草稿；真正写入 Neon 和 R2 之前，不产生持久化入库。"
+      description="把外部合法来源收敛成可审核草稿，暂不写入 Neon 和 R2。"
       eyebrow="资源导入"
     >
       <section className="content-layout">
