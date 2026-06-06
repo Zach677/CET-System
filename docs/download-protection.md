@@ -96,5 +96,5 @@ npm run check
 Deployment still needs one real-environment smoke with an actual R2 object:
 
 ```bash
-curl -I "https://<deployment>/api/resources/cet4-paper-2024-12-a/file?fileId=paper-pdf"
+curl -I "https://<deployment>/api/resources/cet4-exam-day-checklist/file?fileId=study-card-html"
 ```

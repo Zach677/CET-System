@@ -26,6 +26,7 @@ export const fileKindLabel: Record<ResourceFileKind, string> = {
   audio: "Audio",
   zip: "ZIP",
   image: "Image",
+  html: "HTML",
 };
 
 export type ResourceSummaryView = {

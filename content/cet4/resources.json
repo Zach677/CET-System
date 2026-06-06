@@ -1,93 +1,81 @@
 [
   {
-    "id": "cet4-paper-2024-12-a",
+    "id": "cet4-exam-day-checklist",
+    "level": "cet4",
+    "type": "skills",
+    "title": "英语四级考试当天流程卡",
+    "summary": "自制流程核对卡，基于官方考生须知和四级笔试结构整理，不复制官方试题、音频或答案。",
+    "year": 2026,
+    "source": "自制整理，参考中国教育考试网",
+    "licenseStatus": "owned",
+    "hostMode": "owned",
+    "downloadPolicy": "signed",
+    "externalUrl": null,
+    "provenance": {
+      "sourceName": "中国教育考试网 CET",
+      "sourceUrl": "https://cet-kw.neea.edu.cn/Home/CandidateNotice.html",
+      "rightsStatus": "owned",
+      "usageScope": "自制流程卡，可站内托管",
+      "checkedAt": "2026-06-06",
+      "notes": "This file is authored by the project. It references official exam timing and structure facts without mirroring official papers, audio, videos, or answers."
+    },
+    "tags": ["官方来源", "考试流程", "自制"],
+    "files": [
+      {
+        "id": "study-card-html",
+        "label": "流程卡 HTML",
+        "kind": "html",
+        "path": "owned/cet4-exam-day-checklist.html",
+        "cacheable": true,
+        "originalFileName": "cet4-exam-day-checklist.html",
+        "sizeBytes": 3551,
+        "checksumSha256": "ec0a2ad06ae147e4c566de24c206906d04d2fb61eaf198b0d3360521921dc16d",
+        "verifiedAt": "2026-06-06"
+      }
+    ]
+  },
+  {
+    "id": "cet4-official-paper-structure",
     "level": "cet4",
     "type": "papers",
-    "title": "2024年12月四级真题 A 卷",
-    "summary": "含试卷结构说明、听力音频和答题节奏建议。",
-    "year": 2024,
-    "source": "自建整理",
-    "licenseStatus": "owned",
-    "hostMode": "owned",
-    "downloadPolicy": "signed",
-    "externalUrl": null,
-    "tags": ["真题", "听力", "近年"],
-    "files": [
-      {
-        "id": "paper-pdf",
-        "label": "试卷 PDF",
-        "kind": "pdf",
-        "path": "papers/cet4-paper-2024-12-a.pdf",
-        "cacheable": true
-      },
-      {
-        "id": "listening-audio",
-        "label": "听力音频",
-        "kind": "audio",
-        "path": "audio/cet4-paper-2024-12-a.mp3",
-        "cacheable": true
-      }
-    ]
-  },
-  {
-    "id": "cet4-mock-sprint-01",
-    "level": "cet4",
-    "type": "mocks",
-    "title": "四级冲刺模拟卷 01",
-    "summary": "按真实考试节奏排版，适合考前限时训练。",
-    "year": 2025,
-    "source": "自建整理",
-    "licenseStatus": "owned",
-    "hostMode": "owned",
-    "downloadPolicy": "signed",
-    "externalUrl": null,
-    "tags": ["模拟", "冲刺"],
-    "files": [
-      {
-        "id": "mock-pdf",
-        "label": "模拟卷 PDF",
-        "kind": "pdf",
-        "path": "mocks/cet4-mock-sprint-01.pdf",
-        "cacheable": true
-      }
-    ]
-  },
-  {
-    "id": "cet4-listening-welearn",
-    "level": "cet4",
-    "type": "listening",
-    "title": "四级听力跟练导航：WE Test / 听力随身练",
-    "summary": "解释两类平台资源的特点、适用场景和风险边界。",
-    "year": 2025,
-    "source": "编辑部整理",
-    "licenseStatus": "restricted",
-    "hostMode": "restricted",
-    "downloadPolicy": "none",
-    "externalUrl": "https://wetest.sflep.com/contact.aspx",
-    "tags": ["听力", "平台资源"],
+    "title": "英语四级官方笔试结构",
+    "summary": "中国教育考试网发布的四级笔试结构、题型、题量、分值比例和考试时间。",
+    "year": 2016,
+    "source": "中国教育考试网",
+    "licenseStatus": "external",
+    "hostMode": "external",
+    "downloadPolicy": "external",
+    "externalUrl": "https://cet.neea.edu.cn/html1/report/16123/196-1.htm",
+    "provenance": {
+      "sourceName": "中国教育考试网 CET",
+      "sourceUrl": "https://cet.neea.edu.cn/html1/report/16123/196-1.htm",
+      "rightsStatus": "external",
+      "usageScope": "外链到官方来源，不复制文件",
+      "checkedAt": "2026-06-06"
+    },
+    "tags": ["官方", "笔试", "题型"],
     "files": []
   },
   {
-    "id": "cet4-reading-cloze-kit",
+    "id": "cet4-official-outline-2016",
     "level": "cet4",
-    "type": "skills",
-    "title": "四级阅读与选词填空专项包",
-    "summary": "按题型拆分练习，配短评和速度目标。",
-    "year": 2025,
-    "source": "自建整理",
-    "licenseStatus": "owned",
-    "hostMode": "owned",
-    "downloadPolicy": "signed",
-    "externalUrl": null,
-    "tags": ["专项", "阅读"],
-    "files": [
-      {
-        "id": "practice-pdf",
-        "label": "专项练习 PDF",
-        "kind": "pdf",
-        "path": "skills/cet4-reading-cloze-kit.pdf",
-        "cacheable": true
-      }
-    ]
+    "type": "resources",
+    "title": "英语四级官方考试大纲导航",
+    "summary": "中国教育考试网考试大纲栏目提供的全国大学英语四、六级考试大纲入口。",
+    "year": 2016,
+    "source": "中国教育考试网",
+    "licenseStatus": "external",
+    "hostMode": "external",
+    "downloadPolicy": "external",
+    "externalUrl": "https://cet.neea.edu.cn/html1/folder/16113/1588-1.htm",
+    "provenance": {
+      "sourceName": "中国教育考试网 CET",
+      "sourceUrl": "https://cet.neea.edu.cn/html1/folder/16113/1588-1.htm",
+      "rightsStatus": "external",
+      "usageScope": "外链到官方来源，不镜像大纲 PDF",
+      "checkedAt": "2026-06-06"
+    },
+    "tags": ["官方", "大纲", "样卷"],
+    "files": []
   }
 ]

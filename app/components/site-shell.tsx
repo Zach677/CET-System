@@ -43,6 +43,7 @@ export function SiteShell({
               <NavLink to="/" end>
                 首页
               </NavLink>
+              <NavLink to="/import">导入</NavLink>
               {levelTabs.map((tab) => (
                 <NavLink key={tab.level} to={`/${tab.level}`}>
                   {tab.label}

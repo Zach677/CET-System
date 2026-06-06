@@ -64,12 +64,21 @@ function toResourceFileView(file: ResourceFile): ResourceFileView {
 }
 
 function toResourceFacts(resource: ResourceRecord): ResourceFactView[] {
-  return [
+  const facts = [
     { label: "来源", value: resource.source },
     { label: "年份", value: String(resource.year) },
     { label: "托管", value: hostModeLabel[resource.hostMode] },
     { label: "授权", value: licenseStatusLabel[resource.licenseStatus] },
   ];
+
+  if (resource.provenance) {
+    facts.push(
+      { label: "用法", value: resource.provenance.usageScope },
+      { label: "核验", value: resource.provenance.checkedAt },
+    );
+  }
+
+  return facts;
 }
 
 function toDownloadPanelView(

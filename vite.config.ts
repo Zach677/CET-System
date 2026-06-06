@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => ({
   ].filter(Boolean),
   test: {
     environment: "node",
-    include: ["app/**/*.test.ts", "server/**/*.test.ts"],
+    include: ["app/**/*.test.ts", "server/**/*.test.ts", "scripts/**/*.test.ts"],
     setupFiles: "./vitest.setup.ts",
   },
 }));

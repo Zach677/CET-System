@@ -136,6 +136,45 @@ describe("resource service", () => {
     });
   });
 
+  it("includes provenance facts when they are present", async () => {
+    const provenanceRepository = createJsonResourceRepository([
+      {
+        id: "cet4-official-guide",
+        level: "cet4",
+        type: "resources",
+        title: "四级官方导航",
+        summary: "官方来源外链。",
+        year: 2026,
+        source: "中国教育考试网",
+        licenseStatus: "external",
+        hostMode: "external",
+        downloadPolicy: "external",
+        externalUrl: "https://cet.neea.edu.cn/",
+        provenance: {
+          sourceName: "中国教育考试网 CET",
+          sourceUrl: "https://cet.neea.edu.cn/",
+          rightsStatus: "external",
+          usageScope: "外链到官方来源，不复制文件",
+          checkedAt: "2026-06-06",
+        },
+        tags: ["官方"],
+        files: [],
+      },
+    ]);
+
+    const detail = await getResourceDetail(
+      "cet4-official-guide",
+      provenanceRepository,
+    );
+
+    expect(detail?.facts).toEqual(
+      expect.arrayContaining([
+        { label: "用法", value: "外链到官方来源，不复制文件" },
+        { label: "核验", value: "2026-06-06" },
+      ]),
+    );
+  });
+
   it("returns null when a detail resource is missing", async () => {
     await expect(
       getResourceDetail("missing-resource", repository),

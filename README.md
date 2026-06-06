@@ -31,7 +31,20 @@ Useful routes for smoke testing:
 
 - `/`
 - `/cet4/papers`
-- `/resources/cet4-paper-2024-12-a`
+- `/resources/cet4-exam-day-checklist`
+- `/import`
+
+## Current Goal
+
+The active execution map lives in `docs/goal-roadmap.md`. Read it before
+planning non-trivial work so changes stay aligned with the current phase,
+checklist, and explicit non-goals.
+
+Current phase: Phase 2.5 - import skeleton and v1 production readiness. The
+production download gate and R2 smoke path are verified. The first real resource
+batch now uses official external sources plus one self-authored owned study
+card. The remaining product slice is to deploy that metadata, refresh the mapped
+R2 object, and smoke it against the production Worker.
 
 ## Scripts
 
@@ -45,6 +58,7 @@ Useful routes for smoke testing:
 | `npm run check` | Build and run `wrangler deploy --dry-run`. |
 | `npm run cloudflare:login` | Start Wrangler login. |
 | `npm run cloudflare:bootstrap` | Ensure Wrangler-managed resources and validate the Worker bundle. |
+| `npm run smoke:download` | Upload or verify one R2-backed owned file through the Worker download gate. |
 | `npm run deploy` | Build and deploy with Wrangler. |
 
 ## Project Shape
@@ -114,6 +128,11 @@ In non-interactive environments, set `CLOUDFLARE_API_TOKEN` instead of using
 browser login. See `docs/download-protection.md` for token scope, dry-run
 behavior, and production smoke checks.
 
+For the first real owned file smoke, use `docs/v1-release-checklist.md` and
+`npm run smoke:download`. Local R2 upload smoke can take
+`--account-id <cloudflare-account-id>`, or inherit `CLOUDFLARE_ACCOUNT_ID` from
+the shell, so Wrangler does not need `/memberships` account discovery.
+
 ## Database Direction
 
 The app currently reads resource metadata from JSON. When the dataset outgrows
@@ -157,7 +176,7 @@ npm run check
 ```
 
 For UI changes, start the app and smoke at least `/`, `/cet4/papers`, and
-`/resources/cet4-paper-2024-12-a`. Check that navigation keeps link semantics,
+`/resources/cet4-exam-day-checklist`. Check that navigation keeps link semantics,
 theme and favorite toggles work, search remains accessible, and no text overlaps
 at desktop or narrow widths.
 

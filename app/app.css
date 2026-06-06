@@ -80,19 +80,25 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
 button,
 a,
-input {
+input,
+select,
+textarea {
   touch-action: manipulation;
 }
 
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--accent) 72%, transparent);
   outline-offset: 2px;
 }
@@ -536,6 +542,109 @@ input:focus-visible {
   color: var(--subtle);
 }
 
+.import-form,
+.import-steps,
+.draft-preview,
+.lane-panel,
+.import-notes {
+  display: grid;
+  gap: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.field-stack {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.field-stack--wide {
+  grid-column: 1 / -1;
+}
+
+.form-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 42px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: 0 12px;
+  background: var(--panel-soft);
+  color: var(--text);
+}
+
+.form-input::placeholder {
+  color: var(--subtle);
+}
+
+.form-input[aria-invalid="true"] {
+  border-color: color-mix(in srgb, var(--danger) 72%, var(--border));
+}
+
+.form-textarea {
+  min-height: 112px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.import-steps ol,
+.import-notes ul,
+.lane-list {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.import-steps li,
+.lane-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.import-steps li:first-child,
+.lane-item:first-child {
+  border-top: 0;
+}
+
+.import-steps strong,
+.lane-item h3 {
+  font-weight: 560;
+}
+
+.import-steps .badge,
+.lane-item .badge {
+  justify-self: start;
+}
+
+.import-steps p,
+.lane-item p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.import-notes ul {
+  gap: 8px;
+}
+
+.import-notes li {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .summary-grid,
 .mini-stats {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -862,5 +971,15 @@ input:focus-visible {
   .mini-stats,
   .detail-meta-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-grid,
+  .import-steps li,
+  .lane-item {
+    grid-template-columns: 1fr;
+  }
+
+  .field-stack--wide {
+    grid-column: auto;
   }
 }

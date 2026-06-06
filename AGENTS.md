@@ -18,6 +18,9 @@ conflict, follow this order: direct user instruction > this file > tool defaults
 
 ## Working Mode
 
+- Before non-trivial work, read `docs/goal-roadmap.md` and identify the current
+  phase, active checklist item, and explicit non-goals. If the requested work
+  does not map to the active phase, mention the mismatch before changing code.
 - Read the existing route/component shape before changing UI. This app is small,
   so prefer focused changes over introducing a large design-system layer.
 - For non-trivial work, identify the smallest real slice that exercises the final

@@ -15,6 +15,7 @@
     "predev": "npm run content:build",
     "preview": "npm run build && vite preview",
     "postinstall": "npm run cf-typegen",
+    "smoke:download": "tsx scripts/r2-download-smoke.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "npm run cf-typegen && react-router typegen && tsc -b"
