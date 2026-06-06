@@ -155,9 +155,11 @@ shell: calm dark surfaces, compact navigation, strong contrast, minimal
 decoration, and resource rows that stay easy to scan. Base UI is used for
 accessible behavior, not visual theming.
 
-Use `DESIGN.md` and `AGENTS.md` before broad UI changes. Avoid nested cards,
-heavy shadows, overly faint gray text, all-caps labels, and page designs that
-feel like marketing landing pages instead of a working study tool.
+Use `DESIGN.md`, `docs/ui-guidelines.md`, `docs/ui-selector-contract.md`, and
+`AGENTS.md` before broad UI changes. Per-task UI-agent work should start from
+`docs/ui-handoff-playbook.md`. Avoid nested cards, heavy shadows, overly faint
+gray text, all-caps labels, and page designs that feel like marketing landing
+pages instead of a working study tool.
 
 ## Verification
 

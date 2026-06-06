@@ -80,6 +80,31 @@ conflict, follow this order: direct user instruction > this file > tool defaults
   text must remain readable, avoid all-caps labels, avoid overly bright red, and
   keep white-background contrast strong.
 
+## UI Delegation Workflow
+
+- Codex owns product logic, route loader/action contracts, server helpers,
+  content schemas, download policy, local-first storage, API shape, Cloudflare
+  bindings, scripts, verification, and review of non-UI boundaries.
+- Zach directs the UI agent for presentation implementation. The UI agent owns
+  visual layout, typography, spacing, responsive behavior, interaction polish,
+  and UI-only copy within an explicit handoff.
+- When Codex changes, designs, or reviews non-UI logic and finds a concrete UI
+  follow-up, Codex must create a handoff in
+  `docs/handoffs/ui-agent/YYYY-MM-DD-<slug>.md` instead of editing
+  presentation code. Zach does not need to ask for that handoff separately.
+- Codex may skip the handoff only when there is no UI consequence, an existing
+  unsent handoff already covers the same follow-up, or Zach explicitly asks
+  Codex to implement UI in the current turn.
+- If non-trivial logic work has no UI follow-up, mention that briefly in the
+  final response.
+- UI handoffs and completion reports follow `docs/ui-handoff-playbook.md`.
+  Selector and copy changes must follow `docs/ui-selector-contract.md`, and
+  visual work must follow `docs/ui-guidelines.md` plus
+  `docs/ui-verification-playbook.md`.
+- Treat a UI completion report as a claim, not proof. Codex reviews the actual
+  diff, preserved contracts, non-UI boundaries, and command output before
+  accepting the work.
+
 ## Local-first and API Boundaries
 
 - `app/lib/local-first.ts` owns browser-local study state. Do not move this state
